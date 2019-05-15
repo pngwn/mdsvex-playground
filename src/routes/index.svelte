@@ -73,10 +73,11 @@ And *this* and **THIS**. And other stuff. You can't use \`each\` blocks. Don't t
 `;
 
   const code_2 = `
+
 <script>
 	import { flip } from 'svelte/animate';
 	import { crossfade, scale } from 'svelte/transition';
-	
+	export let color = 'pink';
 	const [send, receive] = crossfade({fallback: scale})
 	
 	let boingers = [
@@ -98,6 +99,7 @@ And *this* and **THIS**. And other stuff. You can't use \`each\` blocks. Don't t
 			<div animate:flip 
 					 in:receive="{{key: val}}"
 					 out:send="{{key: val}}"
+					 style="background:{color};"
 					 on:click="{() => toggleBoing(val)}">{val}</div>
 		{/each}
 	</div>
@@ -107,6 +109,7 @@ And *this* and **THIS**. And other stuff. You can't use \`each\` blocks. Don't t
 			<div animate:flip 
 					 in:receive="{{key: val}}"
 					 out:send="{{key: val}}"
+					 style="background:{color};"
 					 on:click="{() => toggleBoing(val)}">{val}</div>
 		{/each}
 	</div>
@@ -128,7 +131,7 @@ And *this* and **THIS**. And other stuff. You can't use \`each\` blocks. Don't t
 			
 	}
 	.boingers div {
-		background: cadetblue;
+		
 		width: 50px;
 		height: 50px;
 		display: flex;
@@ -140,6 +143,8 @@ And *this* and **THIS**. And other stuff. You can't use \`each\` blocks. Don't t
 		cursor: pointer;
 	}
 </style>
+
+
 
 `;
 
