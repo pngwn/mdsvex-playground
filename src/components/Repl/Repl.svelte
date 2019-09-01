@@ -61,7 +61,6 @@
     const { name, type } = $selected || {};
 
     components.set(data.components);
-    // console.log(data, "data");
     const matched_component = data.components.find(
       file => file.name === name && file.type === type
     );
@@ -100,7 +99,6 @@
   let current_token;
   async function rebundle() {
     const token = (current_token = {});
-    console.log($components.map(preprocess));
     const result = await bundler.bundle($components.map(preprocess));
     if (result && token === current_token) bundle.set(result);
   }
@@ -145,9 +143,6 @@
       });
 
       components.update(c => c);
-      // console.log($selected);
-      // recompile selected component
-      // selected.update(preprocess);
       output.update($selected, $compile_options);
 
       rebundle();

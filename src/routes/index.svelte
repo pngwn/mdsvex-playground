@@ -21,7 +21,7 @@ list: [1, 2, 3, 4, "boo"]
 	let number = 45;
 \`\`\`
 
-# { _fm.title }
+# { _metadata.title }
 
 ## Good stuff in your markdown
 
@@ -29,7 +29,7 @@ Markdown is pretty good but sometimes you just need more.
 
 Sometimes you need a boinger like this:
 
-<Boinger color="{_fm.color}"/>
+<Boinger color="{_metadata.color}"/>
 
 Not many people have a boinger right in their markdown.
 
@@ -48,18 +48,18 @@ I'm not gonna stand in the way of your egomania.
 Yeah, thats right you can put wigdets in markdown (\`.svexy\` files or otherwise). You can put markdown in widgets too.
 
 <Seriously>
-	
+
 ### I wasn't joking
-	
+
 \`\`\`
 	This is real life
 \`\`\`
-	
+
 </Seriously>
 
 Sometimes you need your widgets **inlined** (like this:<Count count="{number}"/>) because why shouldn't you.
 
-Obviously you have access to values defined in YAML (namespaced under \`_fm\`) and anything defined in an fenced \`js exec\` block can be referenced directly.
+Obviously you have access to values defined in YAML (namespaced under \`_metadata\`) and anything defined in an fenced \`js exec\` block can be referenced directly.
 
 Normal markdown stuff works too:
 
@@ -79,7 +79,7 @@ And *this* and **THIS**. And other stuff. You can't use \`each\` blocks. Don't t
 	import { crossfade, scale } from 'svelte/transition';
 	export let color = 'pink';
 	const [send, receive] = crossfade({fallback: scale})
-	
+
 	let boingers = [
 		{val: 1, boinged: true},
 		{val: 2, boinged: true},
@@ -87,7 +87,7 @@ And *this* and **THIS**. And other stuff. You can't use \`each\` blocks. Don't t
 		{val: 4, boinged: true},
 		{val: 5, boinged: false}
 	];
-	
+
 	function toggleBoing (id){
 		const index = boingers.findIndex(v => v.val === id);
 		boingers[index].boinged = !boingers[index].boinged
@@ -96,17 +96,17 @@ And *this* and **THIS**. And other stuff. You can't use \`each\` blocks. Don't t
 <div class="container">
 	<div class="boingers">
 		{#each boingers.filter(v => !v.boinged) as {val} (val)}
-			<div animate:flip 
+			<div animate:flip
 					 in:receive="{{key: val}}"
 					 out:send="{{key: val}}"
 					 style="background:{color};"
 					 on:click="{() => toggleBoing(val)}">{val}</div>
 		{/each}
 	</div>
-	
+
 	<div class="boingers">
 		{#each boingers.filter(v => v.boinged) as {val} (val)}
-			<div animate:flip 
+			<div animate:flip
 					 in:receive="{{key: val}}"
 					 out:send="{{key: val}}"
 					 style="background:{color};"
@@ -120,18 +120,18 @@ And *this* and **THIS**. And other stuff. You can't use \`each\` blocks. Don't t
 		width: 300px;
 		height: 200px;
 		display: flex;
-		justify-content: space-between; 
+		justify-content: space-between;
 	}
 	.boingers {
 		display: grid;
 		grid-template-rows: repeat(3, 1fr);
 		grid-template-columns: repeat(2, 1fr);
 		grid-gap: 10px;
-			
-			
+
+
 	}
 	.boingers div {
-		
+
 		width: 50px;
 		height: 50px;
 		display: flex;
@@ -206,7 +206,7 @@ const code_5 = `
 		transform: translateX(-200px);
 		animation: 2s slide infinite alternate ease-in-out;
 	}
-	
+
 	@keyframes slide {
 		from {
 			transform: translateX(-200px)
@@ -214,7 +214,7 @@ const code_5 = `
 		to {
 			transform: translateX(200px)
 		}
-		
+
 	}
 </style>
 `
