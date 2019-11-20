@@ -2,6 +2,7 @@
   import { getContext, onMount } from "svelte";
   import SplitPane from "../SplitPane.svelte";
   import Viewer from "./Viewer.svelte";
+  import PaneWithPanel from "./PaneWithPanel.svelte";
   import CompilerOptions from "./CompilerOptions.svelte";
   import Compiler from "./Compiler.js";
   import CodeMirror from "../CodeMirror.svelte";
@@ -10,12 +11,15 @@
   const { register_output } = getContext("REPL");
 
   export let svelteUrl;
+  export let workersUrl;
+  export let status;
   export let sourceErrorLoc = null;
   export let runtimeError = null;
   export let embedded = false;
   export let relaxed = false;
   export let injectedJS;
   export let injectedCSS;
+  export let funky = false;
 
   let foo; // TODO workaround for https://github.com/sveltejs/svelte/issues/2122
 
@@ -45,7 +49,7 @@
     }
   });
 
-  const compiler = is_browser && new Compiler(svelteUrl);
+  const compiler = is_browser && new Compiler(workersUrl, svelteUrl);
 
   // refs
   let viewer;
@@ -59,9 +63,10 @@
 <style>
   .view-toggle {
     height: var(--pane-controls-h);
-    border-bottom: 1px solid rgba(95, 158, 160, 0.5);
+    border-bottom: 1px solid #eee;
     white-space: nowrap;
     box-sizing: border-box;
+    padding-left: 15px;
   }
 
   button {
@@ -76,7 +81,6 @@
     padding: 12px 12px 8px 12px;
     color: #999;
     border-radius: 0;
-    cursor: unset;
   }
 
   button.active {
@@ -84,10 +88,34 @@
     color: #333;
   }
 
+  button.funky {
+    /* width: 50%;
+		height: 100%; */
+    background: white;
+    text-align: left;
+    position: relative;
+    font: 400 12px/1.5 var(--font);
+    border: none;
+    border-bottom: 3px solid transparent;
+    padding: 12px 12px 8px 12px;
+    color: #999;
+    border-radius: 0;
+    /* font-size: 0;
+    width: 15px;
+    height: 15px;
+    background: #ccc;
+    border-radius: 50%;
+    margin-right: 5px; */
+  }
+
+  div[slot] {
+    height: 100%;
+  }
+
   .tab-content {
     position: absolute;
     width: 100%;
-    height: calc(100% - 42px);
+    height: calc(100% - 42px) !important;
     opacity: 0;
     pointer-events: none;
   }
@@ -97,81 +125,64 @@
     opacity: 1;
     pointer-events: all;
   }
-
-  .linkylink {
-    float: right;
-    margin: 10px 20px;
-    font-size: 14px;
-    font-family: "Fira Mono";
-    border-bottom: none;
-  }
-
-  .linkylink:hover {
-    border-bottom: 1px solid cadetblue;
-    color: cadetblue;
-  }
 </style>
 
 <div class="view-toggle">
-  <button style="color: #333;" on:click={() => (view = 'result')}>
+  <button class:active={view === 'result'} on:click={() => (view = 'result')}>
     Result
   </button>
 
-  <a class="linkylink" href="https://github.com/pngwn/MDsveX">MDsveX -></a>
-
-  <!-- <button class:active={view === 'js'} on:click={() => (view = 'js')}>
+  <button class:active={view === 'js'} on:click={() => (view = 'js')}>
     JS output
   </button>
 
   <button class:active={view === 'css'} on:click={() => (view = 'css')}>
     CSS output
-  </button> -->
+  </button>
 </div>
 
 <!-- component viewer -->
 <div class="tab-content" class:visible={view === 'result'}>
   <Viewer
+    {funky}
     bind:this={viewer}
     bind:error={runtimeError}
+    {status}
     {relaxed}
     {injectedJS}
     {injectedCSS} />
 </div>
 
 <!-- js output -->
-<!-- <div class="tab-content" class:visible="{view === 'js'}">
-	{#if embedded}
-		<CodeMirror
-			bind:this={js_editor}
-			mode="js"
-			errorLoc={sourceErrorLoc}
-			readonly
-		/>
-	{:else}
-		<SplitPane type="vertical" pos={67}>
-			<div slot="a">
-				<CodeMirror
-					bind:this={js_editor}
-					mode="js"
-					errorLoc={sourceErrorLoc}
-					readonly
-				/>
-			</div>
+<div class="tab-content" class:visible={view === 'js'}>
+  {#if embedded}
+    <CodeMirror
+      bind:this={js_editor}
+      mode="js"
+      errorLoc={sourceErrorLoc}
+      readonly />
+  {:else}
+    <PaneWithPanel pos={67} panel="Compiler options">
+      <div slot="main">
+        <CodeMirror
+          bind:this={js_editor}
+          mode="js"
+          errorLoc={sourceErrorLoc}
+          readonly />
+      </div>
 
-			<section slot="b">
-				<h3>Compiler options</h3>
-
-				<CompilerOptions bind:foo={foo}/>
-			</section>
-		</SplitPane>
-	{/if}
-</div> -->
+      <div slot="panel-body">
+        <CompilerOptions />
+      </div>
+    </PaneWithPanel>
+  {/if}
+</div>
 
 <!-- css output -->
-<!-- <div class="tab-content" class:visible={view === 'css'}>
+<div class="tab-content" class:visible={view === 'css'}>
   <CodeMirror
     bind:this={css_editor}
     mode="css"
     errorLoc={sourceErrorLoc}
     readonly />
-</div> -->
+</div>

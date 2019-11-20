@@ -1,42 +1,26 @@
 <script>
-  import { onMount, setContext, createEventDispatcher } from "svelte";
+  import { setContext, createEventDispatcher } from "svelte";
   import { writable } from "svelte/store";
   import SplitPane from "./SplitPane.svelte";
-  import CodeMirror from "./CodeMirror.svelte";
   import ComponentSelector from "./Input/ComponentSelector.svelte";
   import ModuleEditor from "./Input/ModuleEditor.svelte";
   import Output from "./Output/index.svelte";
   import Bundler from "./Bundler.js";
   import { is_browser } from "./env.js";
-  import { mdsvex } from "mdsvex";
 
-  export let svelteUrl = "https://unpkg.com/svelte";
-  export let rollupUrl = "https://unpkg.com/rollup/dist/rollup.browser.js";
-  export let embedded = false;
+  export let workersUrl;
+  export let packagesUrl = "https://unpkg.com";
+  export let svelteUrl = `${packagesUrl}/svelte`;
+  export let embedded = true;
   export let orientation = "columns";
   export let relaxed = false;
   export let fixed = false;
   export let fixedPos = 50;
   export let injectedJS = "";
   export let injectedCSS = "";
+  export let funky = false;
 
-  const preprocess = v =>
-    v.type === "svexy"
-      ? {
-          ...v,
-          source: mdsvex().markup({
-            content: v.source,
-            filename: v.name + ".svexy"
-          }).code
-        }
-      : v;
   export function toJSON() {
-    // TODO there's a bug here — Svelte hoists this function because
-    // it wrongly things that $components is global. Needs to
-    // factor in $ variables when determining hoistability
-
-    svelteUrl; // workaround
-
     return {
       imports: $bundle.imports,
       components: $components
@@ -77,6 +61,10 @@
     }
   }
 
+  if (!workersUrl) {
+    throw new Error(`You must supply workersUrl prop to <Repl>`);
+  }
+
   const dispatch = createEventDispatcher();
 
   const components = writable([]);
@@ -99,7 +87,7 @@
   let current_token;
   async function rebundle() {
     const token = (current_token = {});
-    const result = await bundler.bundle($components.map(preprocess));
+    const result = await bundler.bundle($components);
     if (result && token === current_token) bundle.set(result);
   }
 
@@ -173,13 +161,21 @@
     output.set($selected, $compile_options);
   }
 
-  let workers;
-
   let input;
   let sourceErrorLoc;
   let runtimeErrorLoc; // TODO refactor this stuff — runtimeErrorLoc is unused
+  let status = null;
 
-  const bundler = is_browser && new Bundler(svelteUrl, rollupUrl);
+  const bundler =
+    is_browser &&
+    new Bundler({
+      workersUrl,
+      packagesUrl,
+      svelteUrl,
+      onstatus: message => {
+        status = message;
+      }
+    });
 
   $: if (output && $selected) {
     output.update($selected, $compile_options);
@@ -213,6 +209,20 @@
     width: 100%;
     height: 100%;
   }
+
+  .funky {
+    border-radius: 3px;
+    box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.02);
+    overflow: hidden;
+    border: 1px solid #ddd;
+  }
+
+  /* .funky {
+    border-radius: none;
+    box-shadow: none;
+    overflow: hidden;
+    border: none;
+  } */
 </style>
 
 <div class="container" class:orientation>
@@ -220,15 +230,24 @@
     type={orientation === 'rows' ? 'vertical' : 'horizontal'}
     pos={fixed ? fixedPos : orientation === 'rows' ? 50 : 60}
     {fixed}>
-    <section slot="a">
-      <ComponentSelector {handle_select} />
+    <section slot="a" class:funky>
+      <ComponentSelector {handle_select} {funky} />
       <ModuleEditor
         bind:this={input}
         errorLoc={sourceErrorLoc || runtimeErrorLoc} />
     </section>
 
-    <section slot="b" style="height: 100%;">
-      <Output {svelteUrl} {embedded} {relaxed} {injectedJS} {injectedCSS} />
+    <section slot="b">
+      <Output
+        walk={true}
+        {funky}
+        {svelteUrl}
+        {workersUrl}
+        {status}
+        {embedded}
+        {relaxed}
+        {injectedJS}
+        {injectedCSS} />
     </section>
   </SplitPane>
 </div>
