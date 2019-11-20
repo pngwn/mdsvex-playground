@@ -1,7 +1,8 @@
 <script>
-  import { getContext, createEventDispatcher } from "svelte";
+  import { getContext } from "svelte";
 
   export let handle_select;
+  export let funky;
 
   const { components, selected, request_focus, rebundle } = getContext("REPL");
 
@@ -21,9 +22,13 @@
   }
 
   function closeEdit() {
-    const match = /(.+)\.(svelte|js|svexy)$/.exec($selected.name);
+    const match = /(.+)\.(svelte|svexy|js)$/.exec($selected.name);
     $selected.name = match ? match[1] : $selected.name;
+    if (isComponentNameUsed($selected)) {
+      $selected.name = $selected.name + "_1";
+    }
     if (match && match[2]) $selected.type = match[2];
+
     editing = null;
 
     // re-select, in case the type changed
@@ -82,12 +87,18 @@
     components.update(components => components.concat(component));
     handle_select(component);
   }
+
+  function isComponentNameUsed(editing) {
+    return $components.find(
+      component => component !== editing && component.name === editing.name
+    );
+  }
 </script>
 
 <style>
   .component-selector {
     position: relative;
-    border-bottom: 1px solid rgba(95, 158, 160, 0.5);
+    border-bottom: 1px solid #eee;
     overflow: hidden;
   }
 
@@ -97,7 +108,7 @@
     white-space: nowrap;
     overflow-x: auto;
     overflow-y: hidden;
-    height: 10em;
+    /* height: 10em; */
   }
 
   .file-tabs .button,
@@ -134,11 +145,7 @@
   }
 
   .input-sizer {
-    color: #333;
-  }
-
-  .input-sizer::selection {
-    background: #333;
+    color: #ccc;
   }
 
   input {
@@ -148,7 +155,7 @@
     top: 12px;
     font: 400 12px/1.5 var(--font);
     border: none;
-    color: #333;
+    color: var(--flash);
     outline: none;
     background-color: transparent;
   }
@@ -206,58 +213,82 @@
     stroke-linejoin: round;
     fill: none;
   }
+
+  .file-tabs.funky {
+    display: flex;
+    justify-content: center;
+    background: #fafafa;
+  }
+
+  .file-tabs .button.funky,
+  .file-tabs .button.funky.active {
+    border-left: 1px solid #ddd;
+    border-bottom: none;
+    background: transparent;
+  }
+
+  .button.funky:last-child {
+    border-left: 1px solid #ddd;
+    border-right: 1px solid #ddd;
+  }
 </style>
 
 <div class="component-selector">
   {#if $components.length}
-    <div class="file-tabs" on:dblclick={addNew}>
-      {#each $components as component}
+    <div class="file-tabs" on:dblclick={addNew} class:funky>
+      {#each $components as component, index}
         <div
           id={component.name}
           class="button"
           role="button"
           class:active={component === $selected}
+          class:funky
           on:click={() => selectComponent(component)}
           on:dblclick={e => e.stopPropagation()}>
-          {#if component.name == 'App'}
-            <div class="uneditable">App.svexy</div>
+          {#if component.name == 'App' && index === 0}
+            <div class="uneditable">App.{component.type}</div>
           {:else if component === editing}
             <span class="input-sizer">
-               {editing.name + (/\./.test(editing.name) ? '' : `.${editing.type}`)}
-
+              {editing.name + (/\./.test(editing.name) ? '' : `.${editing.type}`)}
             </span>
 
+            <!-- svelte-ignore a11y-autofocus -->
             <input
               autofocus
               spellcheck={false}
               bind:value={editing.name}
               on:focus={selectInput}
               on:blur={closeEdit}
-              on:keydown={e => e.which === 13 && e.target.blur()} />
+              on:keydown={e => e.which === 13 && !isComponentNameUsed(editing) && e.target.blur()}
+              class:duplicate={isComponentNameUsed(editing)} />
           {:else}
             <div
               class="editable"
               title="edit component name"
               on:click={() => editTab(component)}>
-               {component.name}.{component.type}
+              {component.name}.{component.type}
             </div>
 
-            <span class="remove" on:click={() => remove(component)}>
-              <svg width="12" height="12" viewBox="0 0 24 24">
-                <line stroke="#999" x1="18" y1="6" x2="6" y2="18" />
-                <line stroke="#999" x1="6" y1="6" x2="18" y2="18" />
-              </svg>
-            </span>
+            {#if !funky}
+              <span class="remove" on:click={() => remove(component)}>
+                <svg width="12" height="12" viewBox="0 0 24 24">
+                  <line stroke="#999" x1="18" y1="6" x2="6" y2="18" />
+                  <line stroke="#999" x1="6" y1="6" x2="18" y2="18" />
+                </svg>
+              </span>
+            {/if}
           {/if}
         </div>
       {/each}
 
-      <button class="add-new" on:click={addNew} title="add new component">
-        <svg width="12" height="12" viewBox="0 0 24 24">
-          <line stroke="#999" x1="12" y1="5" x2="12" y2="19" />
-          <line stroke="#999" x1="5" y1="12" x2="19" y2="12" />
-        </svg>
-      </button>
+      {#if !funky}
+        <button class="add-new" on:click={addNew} title="add new component">
+          <svg width="12" height="12" viewBox="0 0 24 24">
+            <line stroke="#999" x1="12" y1="5" x2="12" y2="19" />
+            <line stroke="#999" x1="5" y1="12" x2="19" y2="12" />
+          </svg>
+        </button>
+      {/if}
     </div>
   {/if}
 </div>
