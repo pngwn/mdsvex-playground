@@ -1,5 +1,5 @@
 <script>
-
+  import Nav from "../components/Nav.svelte";
 </script>
 
 <style>
@@ -8,6 +8,8 @@
     overflow: hidden;
   }
 </style>
+
+<Nav />
 
 <main>
   <slot />

@@ -22,6 +22,7 @@
     margin-bottom: 0;
     margin: 0;
     font-family: "Roboto";
+    color: #333;
   }
 
   p {
