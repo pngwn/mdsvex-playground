@@ -1111,10 +1111,10 @@ matchit@^1.0.0:
   dependencies:
     "@arr/every" "^1.0.0"
 
-mdsvex@^0.4.1-beta.15:
-  version "0.4.1-beta.15"
-  resolved "https://registry.yarnpkg.com/mdsvex/-/mdsvex-0.4.1-beta.15.tgz#fd7f90345992e1ed425852f32affc08580743c80"
-  integrity sha512-w3kLk/Bx6bryUoSiTLqfPh9ImuD+xHs2o8KKmyy9ti2LGvo6oYYw8My6xn/0ZPwI+SFvxuGKC7m3K074nynOjA==
+mdsvex@^0.4.1-beta.16:
+  version "0.4.1-beta.16"
+  resolved "https://registry.yarnpkg.com/mdsvex/-/mdsvex-0.4.1-beta.16.tgz#fba9cbc4c2ce0eaf26fd7b9c1b559be93c15a9f6"
+  integrity sha512-hoWZBTRJ7XnIDqmPHlX0a8td3lNsUFEJAgGd9/sf6XzDSBQ34Hzkg1zNrWdNEBFmBVXlLaZ23dUCdCRaVVdYDA==
 
 memorystream@^0.3.1:
   version "0.3.1"

@@ -3,9 +3,9 @@
 	"description": "TODO",
 	"version": "0.0.1",
 	"scripts": {
-		"dev": "sapper dev",
-		"build": "sapper build --legacy",
-		"export": "sapper export --legacy",
+		"dev": "sapper dev --ext '.svelte .svexy'",
+		"build": "sapper build --legacy --ext '.svelte .svexy'",
+		"export": "sapper export --legacy --ext '.svelte .svexy'",
 		"start": "node __sapper__/build",
 		"cy:run": "cypress run",
 		"cy:open": "cypress open",
@@ -14,7 +14,7 @@
 	},
 	"dependencies": {
 		"compression": "^1.7.1",
-		"mdsvex": "^0.4.1-beta.15",
+		"mdsvex": "^0.4.1-beta.16",
 		"polka": "^0.5.0",
 		"sirv": "^0.4.0",
 		"yootils": "^0.0.15"
