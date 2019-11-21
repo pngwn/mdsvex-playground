@@ -11,6 +11,8 @@ const mode = process.env.NODE_ENV;
 const dev = mode === "development";
 const legacy = !!process.env.SAPPER_LEGACY_BUILD;
 
+import { mdsvex } from "mdsvex";
+
 export default {
 	client: {
 		input: config.client.input(),
@@ -24,6 +26,8 @@ export default {
 				"process.env.NODE_ENV": JSON.stringify(mode)
 			}),
 			svelte({
+				extensions: [".svelte", ".svexy"],
+				preprocess: mdsvex(),
 				dev,
 				hydratable: true,
 				emitCss: true
@@ -71,6 +75,8 @@ export default {
 				"process.env.NODE_ENV": JSON.stringify(mode)
 			}),
 			svelte({
+				extensions: [".svelte", ".svexy"],
+				preprocess: mdsvex(),
 				generate: "ssr",
 				dev
 			}),

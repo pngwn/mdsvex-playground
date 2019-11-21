@@ -563,6 +563,6 @@ input[type="checkbox"]:checked::after {
 	font-family: "Roboto";
 	src: url("/fonts/roboto-thin-webfont.woff2") format("woff2"),
 		url("/fonts/roboto-thin-webfont.woff") format("woff");
-	font-weight: normal;
+	font-weight: 100;
 	font-style: normal;
 }
