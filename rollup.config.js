@@ -7,6 +7,10 @@ import { terser } from "rollup-plugin-terser";
 import config from "sapper/config/rollup.js";
 import pkg from "./package.json";
 
+import slug from "rehype-slug";
+import link from "rehype-autolink-headings";
+import refractor from "refractor";
+
 const mode = process.env.NODE_ENV;
 const dev = mode === "development";
 const legacy = !!process.env.SAPPER_LEGACY_BUILD;
@@ -27,7 +31,7 @@ export default {
 			}),
 			svelte({
 				extensions: [".svelte", ".svexy"],
-				preprocess: mdsvex(),
+				preprocess: mdsvex({ rehypePlugins: [slug, link] }),
 				dev,
 				hydratable: true,
 				emitCss: true
@@ -76,7 +80,7 @@ export default {
 			}),
 			svelte({
 				extensions: [".svelte", ".svexy"],
-				preprocess: mdsvex(),
+				preprocess: mdsvex({ rehypePlugins: [slug, link] }),
 				generate: "ssr",
 				dev
 			}),
