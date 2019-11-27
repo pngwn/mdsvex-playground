@@ -76,7 +76,17 @@
     font-size: 6rem;
   }
 
-  article :global(*) {
+  article :global(h3) {
+    margin-bottom: 2rem;
+    margin-top: 5rem;
+  }
+
+  article :global(h4) {
+    margin-top: 4rem;
+    margin-bottom: 2rem;
+  }
+
+  article :global(p) {
     font-family: "Roboto";
   }
 
@@ -85,26 +95,40 @@
     font-family: "Fira Mono";
     position: relative;
     border-radius: 0.3rem;
-    white-space: nowrap;
     color: #333;
     -webkit-font-smoothing: initial;
     background: #eee;
     padding: 3px 6px;
+    white-space: pre;
+    word-spacing: normal;
+    word-break: normal;
+    word-wrap: normal;
   }
 
   article :global(pre code) {
     white-space: pre;
     background: none;
-    color: #eee;
+    color: #cbccc6;
     padding: 0;
+    white-space: pre;
+    word-spacing: normal;
+    word-break: normal;
+    word-wrap: normal;
+    tab-size: 2rem;
   }
 
   article :global(pre) {
-    background: #333;
-    color: #eee;
+    background: #1f2430;
+    color: #cbccc6;
     border-radius: 3px;
     padding: 1rem 2rem;
     margin: 0rem 0 4rem 0;
+    font-size: 1.4rem;
+    white-space: pre;
+    word-spacing: normal;
+    word-break: normal;
+    word-wrap: normal;
+    line-height: 2.5rem;
   }
 
   article :global(h2) {
@@ -119,6 +143,22 @@
   article :global(blockquote p) {
     color: #222;
     font-size: 1.8rem;
+  }
+
+  article :global(h3 code) {
+    font-size: 2.2rem;
+    /* background: none; */
+  }
+
+  article :global(h4 code) {
+    font-size: 1.8rem;
+    margin-bottom: 2rem;
+  }
+
+  article :global(pre.language-sig) {
+    display: inline-block;
+    padding: 2px 7px 1px;
+    margin: 20px 0 0 0;
   }
 </style>
 

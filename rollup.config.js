@@ -9,7 +9,8 @@ import pkg from "./package.json";
 
 import slug from "rehype-slug";
 import link from "rehype-autolink-headings";
-import refractor from "refractor";
+
+import { highlight, highlighter } from "./prism/prism.js";
 
 const mode = process.env.NODE_ENV;
 const dev = mode === "development";
@@ -30,8 +31,12 @@ export default {
 				"process.env.NODE_ENV": JSON.stringify(mode)
 			}),
 			svelte({
+				preserveWhitespace: true,
 				extensions: [".svelte", ".svexy"],
-				preprocess: mdsvex({ rehypePlugins: [slug, link] }),
+				preprocess: mdsvex({
+					remarkPlugins: [[highlighter, { highlight }]],
+					rehypePlugins: [slug, link]
+				}),
 				dev,
 				hydratable: true,
 				emitCss: true
@@ -79,8 +84,12 @@ export default {
 				"process.env.NODE_ENV": JSON.stringify(mode)
 			}),
 			svelte({
+				preserveWhitespace: true,
 				extensions: [".svelte", ".svexy"],
-				preprocess: mdsvex({ rehypePlugins: [slug, link] }),
+				preprocess: mdsvex({
+					remarkPlugins: [[highlighter, { highlight }]],
+					rehypePlugins: [slug, link]
+				}),
 				generate: "ssr",
 				dev
 			}),

@@ -1,11 +1,3 @@
-/*
------------------------------------------------
-	vars – css custom-properties
-	NOTE
-	- some vars change inside media-queries!
-	- under normal conditions, there's no need to touch these
------------------------------------------------
-*/
 :root {
 	--nav-h: 6rem;
 	--top-offset: 6rem;
@@ -17,7 +9,6 @@
 	--side-nav: 3.2rem;
 	--side-page: var(--side-nav);
 	--second: rgba(95, 158, 160, 0.5);
-	/* easings */
 	--in-cubic: cubic-bezier(0.55, 0.055, 0.675, 0.19);
 	--out-cubic: cubic-bezier(0.215, 0.61, 0.355, 1);
 	--inout-cubic: cubic-bezier(0.645, 0.045, 0.355, 1);
@@ -34,18 +25,18 @@
 	--heading: var(--second);
 	--text: #444;
 	--sidebar-text: rgba(255, 255, 255, 0.75);
-	--border-w: 0.3rem; /* border-width  */
-	--border-r: 0.4rem; /* border-radius */
+	--border-w: 0.3rem;
+	--border-r: 0.4rem;
 	--unit: 0.8rem;
 	--code-fs: 1.4rem;
 	--h6: 1.4rem;
 	--h5: 1.6rem;
-	--h4: 1.8rem; /* default font-size */
+	--h4: 1.8rem;
 	--h3: 2.6rem;
 	--h2: 3rem;
 	--h1: 3.2rem;
-	--linemax: 42em; /* max line-length */
-	--lh: 1.5; /* base line-height */
+	--linemax: 42em;
+	--lh: 1.5;
 }
 
 @media screen and (min-width: 768px) {
@@ -64,29 +55,24 @@ body {
 		Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
 }
 
-/*	fonts ---------------------------------- */
-/* overpass-300normal - latin */
 @font-face {
 	font-family: "Overpass";
 	font-style: normal;
 	font-weight: 300;
 }
 
-/* overpass-600normal - latin */
 @font-face {
 	font-family: "Overpass";
 	font-style: normal;
 	font-weight: 600;
 }
 
-/* fira-mono-400normal - latin */
 @font-face {
 	font-family: "Fira Mono";
 	font-style: normal;
 	font-weight: 400;
 }
 
-/*	base reset ----------------------------- */
 html {
 	font-size: 62.5%;
 	-ms-text-size-adjust: 62.5%;
@@ -109,7 +95,6 @@ body,
 	padding: 0;
 }
 
-/*	link reset ----------------------------- */
 a {
 	text-decoration: none;
 	cursor: pointer;
@@ -124,20 +109,10 @@ a:focus {
 	outline: none;
 }
 
-/*
------------------------------------------------
-	global styles
------------------------------------------------
-*/
-
-/*	typography ----------------------------- */
 body {
 	font: 300 var(--h4) / var(--lh) var(--font);
 	background-color: var(--back);
 	color: var(--text);
-
-	/* default spacing of Overpass is a bit too airy */
-	/* letter-spacing: -.013em; */
 }
 
 h1,
@@ -152,7 +127,6 @@ blockquote {
 	color: var(--heading);
 }
 
-/* h1, h2, h3, h4, h5, h6 { font-weight: 600 } */
 h6 {
 	font-size: var(--h6);
 }
@@ -215,7 +189,6 @@ pre code {
 	background-color: none;
 }
 
-/* sync CodeMirror with prism  */
 .CodeMirror {
 	font-size: var(--code-fs) !important;
 }
@@ -224,8 +197,6 @@ pre code {
 	background: var(--flash);
 	color: white;
 }
-
-/*	opinionated styles --------------------- */
 
 li:not(.white) > h2 {
 	color: var(--second);
@@ -248,7 +219,6 @@ blockquote :last-child {
 	margin: 0;
 }
 
-/*  buttons -------------------------------- */
 button {
 	font-family: inherit;
 	font-size: inherit;
@@ -279,7 +249,6 @@ button > svg,
 	stroke: currentColor !important;
 }
 
-/*  reset ------- */
 .btn {
 	--btn-h: 4rem;
 	--btn-outline: 0.2rem;
@@ -304,7 +273,6 @@ button > svg,
 	cursor: pointer;
 }
 
-/*  default */
 .btn {
 	line-height: var(--btn-h);
 	height: var(--btn-h);
@@ -318,7 +286,6 @@ button > svg,
 	background-image: var(--btn-hover);
 }
 
-/*  optional */
 .btn[outline] {
 	line-height: var(--btn-calc-h);
 	height: var(--btn-calc-h);
@@ -327,7 +294,6 @@ button > svg,
 	color: currentColor;
 }
 
-/*  links ------------------------------------- */
 a {
 	position: relative;
 	padding: 0 0 1px 0;
@@ -351,9 +317,6 @@ a.no-underline {
 	padding: 0;
 }
 
-/* a:hover:not(.disabled) > .icon { stroke: var(--flash) } */
-
-/*  lists ---------------------------------- */
 .listify ol,
 .listify ul {
 	--list-padding: 2.9rem;
@@ -386,7 +349,6 @@ a.no-underline {
 	list-style: decimal;
 }
 
-/*  tables --------------------------------- */
 table {
 	width: 100%;
 	font-size: var(--h5);
@@ -404,7 +366,6 @@ table span {
 	white-space: pre;
 }
 
-/*	grid ----------------------------------- */
 .grid,
 .grid.half {
 	display: grid;
@@ -445,7 +406,6 @@ table span {
 	}
 }
 
-/*	helper styles -------------------------- */
 .flex-auto {
 	flex: 1 0 auto;
 }
@@ -475,7 +435,6 @@ figcaption,
 	border-radius: var(--border-r);
 }
 
-/*	theme colors --------------------------- */
 .prime {
 	color: var(--prime) !important;
 }
@@ -508,9 +467,7 @@ figcaption,
 	background-color: var(--flash) !important;
 }
 
-/*	inputs --------------------------------- */
 input[type="checkbox"] {
-	/* display: block; */
 	position: relative;
 	height: 1em;
 	width: calc(100% - 0.6em);
@@ -533,7 +490,6 @@ input[type="checkbox"]::before {
 	top: 0;
 	left: 0;
 	background: var(--second);
-	/* box-sizing: border-box; */
 	box-sizing: content-box;
 }
 
@@ -565,4 +521,174 @@ input[type="checkbox"]:checked::after {
 		url("/fonts/roboto-thin-webfont.woff") format("woff");
 	font-weight: 100;
 	font-style: normal;
+}
+
+code[class*="language-"],
+pre[class*="language-"] {
+	color: #ccc;
+	background: none;
+	font-family: Consolas, Monaco, "Andale Mono", "Ubuntu Mono", monospace;
+	font-size: 1em;
+	text-align: left;
+	white-space: pre;
+	word-spacing: normal;
+	word-break: normal;
+	word-wrap: normal;
+	line-height: 1.5;
+
+	-moz-tab-size: 4;
+	-o-tab-size: 4;
+	tab-size: 4;
+
+	-webkit-hyphens: none;
+	-moz-hyphens: none;
+	-ms-hyphens: none;
+	hyphens: none;
+}
+
+pre[class*="language-"] {
+	padding: 1em;
+	margin: 0.5em 0;
+	overflow: auto;
+}
+
+:not(pre) > code[class*="language-"],
+pre[class*="language-"] {
+	background: #1f2430;
+}
+
+:not(pre) > code[class*="language-"] {
+	padding: 0.1em;
+	border-radius: 0.3em;
+	white-space: normal;
+}
+
+.token.comment,
+.token.block-comment,
+.token.prolog,
+.token.doctype,
+.token.cdata {
+	color: #5c6773;
+}
+
+.token.punctuation {
+	color: #ccc;
+}
+
+.token.tag,
+.token.attr-name,
+.token.deleted {
+	color: #e2777a;
+}
+
+.token.function-name {
+	color: #6196cc;
+}
+
+.token.boolean,
+.token.token.function-name {
+	color: #f08d49;
+}
+
+.token.class-name,
+.token.symbol {
+	color: #f8c555;
+}
+
+.token.important,
+.token.atrule,
+.token.keyword {
+	color: #cc99cd;
+}
+
+.token.char,
+.token.attr-value {
+	color: #7ec699;
+}
+
+.token.operator,
+.token.url {
+	color: #67cdcc;
+}
+
+.token.important,
+.token.bold {
+	font-weight: bold;
+}
+.token.italic {
+	font-style: italic;
+}
+
+.token.inserted {
+	color: green;
+}
+
+/* ayu */
+.token.title,
+.token.string {
+	color: #bae67e;
+}
+
+.token.regex {
+	color: #95e6cb;
+}
+.token.constant,
+.token.number {
+	color: #ffcc66;
+}
+
+.token.function,
+.token.selector,
+.token.attr-name {
+	color: #ffd580;
+}
+.token.entity {
+	color: #d4bfff;
+	cursor: help;
+}
+
+[class*="language-"] {
+	color: #cbccc6;
+}
+
+.token.variable,
+.token.punctuation {
+	color: #cbccc6;
+}
+.token.property {
+	color: #f28779;
+}
+
+.token.builtin,
+.token.class-name {
+	color: #5ccfe6;
+}
+
+.token.keyword {
+	color: #ffa759;
+}
+
+.token.operator {
+	color: #f29e74;
+}
+
+/* .token.function-name {
+	color: #ffd580;
+} */
+
+.token.parameter {
+	color: #d4bfff;
+}
+
+.token.tag,
+.token.property {
+	color: #5ccfe6;
+}
+
+.token.punctuation {
+	color: #5ccfe680;
+}
+
+.token.namespace {
+	opacity: 0.8;
 }
