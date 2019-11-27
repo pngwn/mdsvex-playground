@@ -10,6 +10,7 @@ nav:
         [extension, docs#extension, true],
         [smartypants, docs#smartypants, true],
         [layout, docs#layout, true],
+        [components, docs#components, true],
         [remarkPlugins, docs#remarkPlugins, true],
         [rehypePlugins, docs#rehypePlugins, true],
       ],
@@ -19,8 +20,8 @@ nav:
       docs#frontmatter,
       [
         [variables, docs#variables, false],
-        [layouts, docs#variables, false],
-        [components, docs#components, false],
+        [layouts, docs#layout-1, false],
+        [components, docs#components-1, false],
       ],
     ]
   - [Integrations, docs#integrations]
@@ -28,17 +29,42 @@ nav:
 
 # mdsvex
 
+```svelte
+<script>
+  export let count = 0;
+
+  function some_func(args) {
+    return args * 2;
+  }
+</script>
+
+<style>
+  button {
+    border-radius: 2px;
+    background: pink;
+  }
+</style>
+
+<button on:click={({ hello }) => count++ }>Hello</button>
+
+{#each Array(10).map(x => x * 2) as { a, b, c }, index (key) }
+    <Component prop={[1, 2, 3]}  {...function_call(args) } />
+{/each}
+
+{@debug value}
+```
+
 A markdown preprocessor for [Svelte][svelte] components. Basically [MDX][mdx] for Svelte.
 
 This preprocessor allows you use Svelte components in your markdown, or markdown in your Svelte components.
 
-`mdsvex` supports all Svelte syntax and _almost_ all markdown syntax. See [limitations](docs/#limitations) for more information.
+mdsvex supports all Svelte syntax and _almost_ all markdown syntax. See [limitations](docs/#limitations) for more information.
 
 You can do this:
 
-```jsx
+```mdsvex
 <script>
-  import { Chart } from '../components/Chart.svelte';
+	import { Chart } from "../components/Chart.svelte";
 </script>
 
 # Here’s a chart
@@ -48,7 +74,7 @@ The chart is rendered inside our MDsveX document.
 <Chart />
 ```
 
-It uses [unified], [remark] and [rehype] and you can use any [`remark` plugins][remark_plugins] or [`rehype` plugins][rehype_plugins] to enhance your experience.
+It uses [unified], [remark] and [rehype] and you can use any [remark plugins][remark_plugins] or [rehype plugins][rehype_plugins] to enhance your experience.
 
 [Try it](/playground)
 
@@ -96,8 +122,11 @@ The preprocessor function accepts an object of options, that allow you customise
 ```ts
 interface MdsvexOptions {
 	extension: string;
-	smartypants: boolean;
-	layout: string;
+	smartypants: boolean | smartypantsOptions;
+	layout: string | Array<RegExp, string>;
+	components:
+		| { [element: string]: string }
+		| Array<RegExp, { [element: string]: string }>;
 	remarkPlugins: Array<plugin> | Array<[plugin, plugin_options]>;
 	rehypePlugins: Array<plugin> | Array<[plugin, plugin_options]>;
 }
@@ -107,9 +136,11 @@ interface MdsvexOptions {
 
 ### `extension`
 
-`extension: string = '.svexy';`
+```ts
+extension: string = ".svexy";
+```
 
-The `extension` option allows you to set a custom file extension for files written in mdsvex, the default value is `.svexy`. Whatever value you choose here must be passed to the `extensions` field of `rollup-plugin-svelte` or `svelte-loader`, even if you use the default of `.svexy`.
+The `extension` option allows you to set a custom file extension for files written in mdsvex, the default value is `.svexy`. Whatever value you choose here must be passed to the `extensions` field of `rollup-plugin-svelte` or `svelte-loader`. If you to not change the default, you must still pass the extension name to the plugin or loader config.
 
 ```js
 export default {
@@ -127,7 +158,81 @@ export default {
 
 ### `smartypants`
 
+```ts
+smartypants: boolean | {
+  quotes: boolean = true;
+  ellipses: boolean = true;
+  backticks: boolean | 'all' = true;
+  dashes: boolean | 'oldschool' | 'inverted' = true;
+} = true;
+```
+
+The `smartypants` transforms plain ASCII punctuation into fancy typographic punctuation HTML entities.
+
+It turns stuff like:
+
+```md
+"They said it was free..."
+```
+
+into:
+
+> "They said it was free..."
+
+Notice the beautiful punctuation. It does other nice things.
+
+`smartypants` can be either a `boolean` (pass `false` to disable it), or an options object. Defaults to `true`. The possible options are as follows.
+
+```sig
+quotes: boolean = true;
+```
+
+Converts straight double and single quotes to smart double or single quotes.
+
+- `"words"` **becomes**: "words"
+- `'words` **becomes** 'words'
+
+```sig
+ellipses: boolean = true;
+```
+
+Converts triple dot characters (with or without spaces between) into a single unicode ellipsis character.
+
+- `words...` **becomes** words...
+
+```sig
+backticks: boolean | 'all' = true;
+```
+
+When `true`, converts double back-ticks into an opening double quote, and double straight single quotes into a closing double quote.
+
+- ` ``words'' ` **becomes** ``words''
+
+When `'all'` it also converts single back-ticks into an opening single quote, and a straight single quote into a closing single smart quote.
+
+Note: Quotes can not be true when backticks is 'all';
+
+```sig
+dashes: boolean | 'oldschool' | 'inverted' = true;
+```
+
+When `true`, converts two dashes into an em-dash character.
+
+- `--` **becomes** —
+
+When `'oldschool'`, converts two dashes into an en-dash, and three dashes into an em-dash.
+
+- `--` **becomes** –
+- `---` **becomes** —
+
+When `'inverted'`, converts two dashes into an em-dash, and three dashes into an en-dash.
+
+- `--` **becomes** —
+- `---` **becomes** –
+
 ### `layout`
+
+### `components`
 
 ### `remarkPlugins`
 
@@ -143,13 +248,16 @@ export default {
 
 ## Integrations
 
+<!--
 > ⚠️ MAKE SURE TO DOCUMENT THIS IN BOTH CLIENT AND SERVER PLUGIN CODE in rollup/webpack
 
 Also, when you run `sapper dev` or `sapper export`, you have to run it with the `--ext` flag, like this:
 
 ```
+
 "start": "sapper dev --ext '.svexy .svelte'",
 "export": "sapper export --ext '.svexy .svelte'",
+
 ```
 
 ## Please, more.
@@ -158,23 +266,24 @@ Also, when you run `sapper dev` or `sapper export`, you have to run it with the 
 
 You can 'execute' javascript by defining a `js exec` fenced code block, these components and variables will then be available within the MDsveX file:
 
-````jsx
+````mdsvex
 ```js exec
 import Counter from './path/to/Counter.svelte';
 
 let number = 500;
-```
+````
 
 <Counter count="{number}" />
 
 Inline components <Counter count="{5}" /> are absolute fine too.
-````
+
+`````
 
 Use `js exec` blocks instead of script blocks because you can have as many `js exec` blocks as you want. And I can't remember if I tested script blocks.
 
 You can also create [module scripts](https://svelte.dev/docs#script_context_module), if you so desire, by using `js module`:
 
-````jsx
+````mdsvex
 ```js module
   export function someFunction(value) {
     // some stuff here
@@ -189,7 +298,7 @@ You can also create [module scripts](https://svelte.dev/docs#script_context_modu
 
 If you wish to style your markdown _inside_ an MDsveX file then you can do so with a `css style` fenced code block. Fenced style blocks ensure `style` elements are _always_ top level, which is required by Svelte, and prevents any problems with markdown interpreting your styles as text. You can use multiple fenced style blocks if you wish, they will be combined into a single style element:
 
-````jsx
+````mdsvex
 # Hello friends
 
 ```css style
@@ -201,7 +310,7 @@ If you wish to style your markdown _inside_ an MDsveX file then you can do so wi
 
 You can also use compile to js languages if you so desire, simply change `css` to the language of your choosing. Languages other than `css` applies a `lang="language"` attribute to the processed component allowing other Svelte preprocessors to transform those styles into plain CSS, as required by Svelte:
 
-````jsx
+````mdsvex
 # Hello friends
 
 ```scss style
@@ -229,7 +338,7 @@ Magic!
 
 You can add some YAML front-matter if you like. The variables and values defined in YAML front-matter are injected into the component's module script tag and are available in the MDsveX file. They are contained in an object named `_metadata`:
 
-````jsx
+````mdsvex
 ---
 number: 500
 ---
@@ -254,7 +363,7 @@ Curlywurlies (`{` and `}`) are pretty special in Svelte components but this migh
 
 The below is perfectly safe: the curlywurlies, which would normally cause issues, are escaped and should not bother you.
 
-````jsx
+````mdsvex
 ```js
 function myFunction(n) {
   return n * 2;
@@ -266,7 +375,7 @@ I am a sentence with an inline `{ code, snippet}` and i do not break either.
 
 MDsveX does not escape curlywurlies outside of fenced code blocks nor does it escape curlywurlies in `js exec` blocks, so you can use dynamic values in component props and directly in markdown. This works:
 
-````jsx
+````mdsvex
 ---
 title: "The title for my great post"
 ---
@@ -279,7 +388,12 @@ let number = 500;
 let text = { text: "Some random text." }
 ```
 
-# { _metadata.title }
+# { [1, 2, 3].reduce((a, n) => a + n, 0) }
+
+
+> { [1, 2, 3].reduce((a, n) => a + n, 0) }
+
+
 
 <Counter count="{number}" />
 
@@ -338,6 +452,7 @@ Layouts defined in front-matter always take priority over global layouts, if the
 Layout components will receive all front-matter properties as props, so you can use things like titles, dates or cover images in your layout component and do snazzy stuff, without the headache of doing it manually. All front-matter values will be passed down, simply `export let` those values in your layout to make use of them. If you try to use a value in a layout that isn't defined in front-matter then Svelte will complain and your page will be plagued with `undefined` and broken-ness (unless you set defaults in the layout).
 
 These are all just Svelte components at the end of the day, so refer to the Svelte [tutorial](https://svelte.dev/tutorial) and [documentation](https://svelte.dev/docs) if you are unsure how it all works. A Sapper/MDsveX template is also in the works (and by 'in the works' I mean that I haven't started it yet).
+-->
 
 [svelte]: https://svelte.dev/
 [mdx]: https://mdxjs.com/
