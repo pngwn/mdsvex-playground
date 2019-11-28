@@ -14,7 +14,7 @@
 	},
 	"dependencies": {
 		"compression": "^1.7.1",
-		"mdsvex": "^0.4.1-beta.16",
+		"mdsvex": "^0.4.1-beta.18",
 		"polka": "^0.5.0",
 		"refractor": "^2.10.0",
 		"sirv": "^0.4.0",
