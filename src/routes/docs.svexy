@@ -533,7 +533,7 @@ import { metadata } from "./some-mdsvex-file.svexy";
 
 ### layout
 
-Defining a `layout` field in frontmatter allows you to prove a custom layout that applies to that mdsvex file only. This layout will take priority over layouts passed as options to the preprocessor.
+Defining a `layout` field in frontmatter allows you to prove a custom layout that applies to that mdsvex file only. This layout will take priority over [layouts passed as options to the preprocessor](docs#layout).
 
 ```mdsvex
 ---
@@ -547,7 +547,7 @@ Paths provided in front-matter should follow the same rule as javascript imports
 
 As with layouts, you may want to pass custom components that only apply to a specific mdsvex file. You can do this by adding a `components` field to your frontmatter which shoudl be an object mapping elements to custom components:
 
-Components defined in frontmatter will take priority over those passed as options to the preprocessor:
+Components defined in frontmatter will take priority over [components passed as options to the preprocessor](docs#components):
 
 ```mdsvex
 ---
