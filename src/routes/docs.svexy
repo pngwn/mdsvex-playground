@@ -11,8 +11,8 @@ nav:
         [smartypants, docs#smartypants, true],
         [layout, docs#layout, true],
         [components, docs#components, true],
-        [remarkPlugins, docs#remarkPlugins, true],
-        [rehypePlugins, docs#rehypePlugins, true],
+        [remarkPlugins, docs#remarkplugins, true],
+        [rehypePlugins, docs#rehypeplugins, true],
       ],
     ]
   - [
@@ -29,34 +29,9 @@ nav:
 
 # mdsvex
 
-```svelte
-<script>
-  export let count = 0;
-
-  function some_func(args) {
-    return args * 2;
-  }
-</script>
-
-<style>
-  button {
-    border-radius: 2px;
-    background: pink;
-  }
-</style>
-
-<button on:click={({ hello }) => count++ }>Hello</button>
-
-{#each Array(10).map(x => x * 2) as { a, b, c }, index (key) }
-    <Component prop={[1, 2, 3]}  {...function_call(args) } />
-{/each}
-
-{@debug value}
-```
-
 A markdown preprocessor for [Svelte][svelte] components. Basically [MDX][mdx] for Svelte.
 
-This preprocessor allows you use Svelte components in your markdown, or markdown in your Svelte components.
+This preprocessor allows you to use Svelte components in your markdown, or markdown in your Svelte components.
 
 mdsvex supports all Svelte syntax and _almost_ all markdown syntax. See [limitations](docs/#limitations) for more information.
 
@@ -64,7 +39,7 @@ You can do this:
 
 ```mdsvex
 <script>
-	import { Chart } from "../components/Chart.svelte";
+ import { Chart } from "../components/Chart.svelte";
 </script>
 
 # Here’s a chart
@@ -117,22 +92,22 @@ export default {
 
 ## Options
 
-The preprocessor function accepts an object of options, that allow you customise your experience. The options are global to all parsed files.
+The preprocessor function accepts an object of options, that allow you to customise your experience. The options are global to all parsed files.
 
 ```ts
 interface MdsvexOptions {
 	extension: string;
 	smartypants: boolean | smartypantsOptions;
-	layout: string | Array<RegExp, string>;
+	layout: string | Array<string | RegExp, string>;
 	components:
 		| { [element: string]: string }
-		| Array<RegExp, { [element: string]: string }>;
+		| Array<string | RegExp, { [element: string]: string }>;
 	remarkPlugins: Array<plugin> | Array<[plugin, plugin_options]>;
 	rehypePlugins: Array<plugin> | Array<[plugin, plugin_options]>;
 }
 ```
 
-`mdsvex` also allows you to define certain options in [YAML frontmatter](docs#frontmatter), to modify behaviour on a _per-file_ basis.
+`mdsvex` also allows you to define individual options in [YAML frontmatter](docs#frontmatter), to modify behaviour on a _per-file_ basis.
 
 ### `extension`
 
@@ -140,7 +115,7 @@ interface MdsvexOptions {
 extension: string = ".svexy";
 ```
 
-The `extension` option allows you to set a custom file extension for files written in mdsvex, the default value is `.svexy`. Whatever value you choose here must be passed to the `extensions` field of `rollup-plugin-svelte` or `svelte-loader`. If you to not change the default, you must still pass the extension name to the plugin or loader config.
+The `extension` option allows you to set a custom file extension for files written in mdsvex; the default value is `.svexy`. Whatever value you choose here must be passed to the `extensions` field of `rollup-plugin-svelte` or `svelte-loader`. If you do not change the default, you must still pass the extension name to the plugin or loader config.
 
 ```js
 export default {
@@ -160,14 +135,14 @@ export default {
 
 ```ts
 smartypants: boolean | {
-  quotes: boolean = true;
-  ellipses: boolean = true;
-  backticks: boolean | 'all' = true;
-  dashes: boolean | 'oldschool' | 'inverted' = true;
+ quotes: boolean = true;
+ ellipses: boolean = true;
+ backticks: boolean | 'all' = true;
+ dashes: boolean | 'oldschool' | 'inverted' = true;
 } = true;
 ```
 
-The `smartypants` transforms plain ASCII punctuation into fancy typographic punctuation HTML entities.
+The `smartypants` options transforms ASCII punctuation into fancy typographic punctuation HTML entities.
 
 It turns stuff like:
 
@@ -181,7 +156,7 @@ into:
 
 Notice the beautiful punctuation. It does other nice things.
 
-`smartypants` can be either a `boolean` (pass `false` to disable it), or an options object. Defaults to `true`. The possible options are as follows.
+`smartypants` can be either a `boolean` (pass `false` to disable it) or an options object (defaults to `true`). The possible options are as follows.
 
 ```sig
 quotes: boolean = true;
@@ -196,7 +171,7 @@ Converts straight double and single quotes to smart double or single quotes.
 ellipses: boolean = true;
 ```
 
-Converts triple dot characters (with or without spaces between) into a single unicode ellipsis character.
+Converts triple-dot characters (with or without spaces) into a single Unicode ellipsis character.
 
 - `words...` **becomes** words...
 
@@ -208,9 +183,9 @@ When `true`, converts double back-ticks into an opening double quote, and double
 
 - ` ``words'' ` **becomes** ``words''
 
-When `'all'` it also converts single back-ticks into an opening single quote, and a straight single quote into a closing single smart quote.
+When `'all'` it also converts single back-ticks into a single opening quote, and a single straight quote into a closing single, smart quote.
 
-Note: Quotes can not be true when backticks is 'all';
+Note: Quotes can not be `true` when backticks is `'all'`;
 
 ```sig
 dashes: boolean | 'oldschool' | 'inverted' = true;
@@ -232,227 +207,335 @@ When `'inverted'`, converts two dashes into an em-dash, and three dashes into an
 
 ### `layout`
 
+```ts
+layout: string | Array<string | RegExp, string>;
+```
+
+The `layout` option allows you to provide a custom layout component that will wrap your mdsvex file like so:
+
+```svelte
+<Layout>
+ <MdsvexDocument />
+<Layout>
+```
+
+> Layout components receive all frontmatter values as props, which should provide a great deal of flexibility when designing your layouts.
+
+You can provide a `string`, which should be the path to your layout component. An absolute path is preferred but mdsvex tries to resolve relative paths based upon the current working directory.
+
+```js
+import { join } from "path";
+
+const path_to_layout = join(__dirname, "./src/Layout.svelte");
+
+mdsvex({
+	layout: path_to_layout
+});
+```
+
+In some cases you may want different layouts for different types of document, to address this you may pass an array instead of a string. Each item should also be an array containing only two elements (a tuple). The first element should either be a `string` or a `RegExp` object. The second should be a path pointing to your layout component, as described above.
+
+The `string` or `RegExp` is used to test the path of the mdsvex document. The first passing test will be used, so depending on your requirements, the order may be important. This also allows you to pass a wildcard or default layout at the end.
+
+As an example, you may have two folders containing mdsvex documents and want to use different layouts for each, you could do something like this:
+
+```js
+mdsvex({
+	layouts: [
+		["/blog/", "./path/to/blog/layout.svelte"],
+		["/article/", "./path/to/article/layout.svelte"]
+	]
+});
+```
+
+In the above case, any mdsvex document containing `/blog/` would use `"./path/to/blog/layout.svelte"` as a layout, documents in `/article/` would use `"./path/to/article/layout.svelte"`. Anything that did not match however would not get a layout. You could provide a default or wildcard by either passing an empty string `""` or a Regular expresison that matches anything (like `[\s\S]*`):
+
+```js
+mdsvex({
+	layouts: [
+		["/blog/", "./path/to/blog/layout.svelte"],
+		["/article/", "./path/to/article/layout.svelte"],
+		["", "./path/to/default/layout.svelte"],
+		// or
+		[/[\s\S]*/, "./path/to/default/layout.svelte"]
+	]
+});
+```
+
 ### `components`
+
+```ts
+components:
+ | { [element: string]: string }
+ | Array<string | RegExp, { [element: string]: string }>;
+```
+
+The `components` option allows you to provide components in place of the DOM elements your markdown converts to. For example:
+
+```mdsvex
+# hello
+```
+
+Would normally produce:
+
+```svelte
+<h1>hello</h1>
+```
+
+However, you can provide a custom component to use instead, producing:
+
+```svelte
+<CustomH1>hello</CustomH1>
+```
+
+Similar to layouts, you can set these custom components by passing an object that should map DOM elements to components. Just like layouts, it is safer if these are absolute paths to the replacement component, but mdsvex tries to resolve them based on the current working directory.
+
+```js
+mdsvex({
+	components: {
+		p: "./CustomP.svelte",
+		h1: "./CustomH1.svelte"
+	}
+});
+```
+
+As with layouts, you may want different types of document to use different custom components. In these instances, you can provide an array. Each item should also be an array containing only two elements (a tuple). The first element should either be a `string` or a `RegExp` object. The second should be an object mapping elements to components, as above.
+
+The `string` or `RegExp` is used to test the path of the mdsvex document. The first passing test is used: depending on your requirements, the order may be important. This also allows you to pass a 'wildcard' or 'default' layout at the end.
+
+```js
+mdsvex({
+	components: [
+		[
+			"/blog/",
+			{
+				p: "./CustomP.svelte",
+				h1: "./CustomH1.svelte"
+			}
+		],
+		[
+			"/article/",
+			{
+				p: "./CustomP-2.svelte",
+				h1: "./CustomH1-2.svelte"
+			}
+		]
+	]
+});
+```
+
+In the above case, any mdsvex documents matching `/blog/` would use the provided components, documents matching `/article/` would use a different set. Anything that did not match however would use the default DOM elements. You could provide a default or wildcard 'match' by either passing an empty string `""` or a Regular expresison that matches anything (like `[\s\S]*`):
+
+```js
+mdsvex({
+	components: [
+		[
+			"/blog/",
+			{
+				p: "./CustomP.svelte",
+				h1: "./CustomH1.svelte"
+			}
+		],
+		[
+			"/article/",
+			{
+				p: "./CustomP-2.svelte",
+				h1: "./CustomH1-2.svelte"
+			}
+		],
+		[
+			"",
+			{
+				p: "./DefaultP-2.svelte",
+				h1: "./DefaultH1-2.svelte"
+			}
+		]
+	]
+});
+```
 
 ### `remarkPlugins`
 
+```ts
+remarkPlugins: Array<plugin> | Array<[plugin, plugin_options]>;
+```
+
+mdsvex has a simple pipeline. Your source file is first parsed into a Markdown AST (MDAST), this is where remark plugins would run. Then it is converted into an HTML AST (HAST), this is where rehype plugins would be run. After this is it converted (stringified) into a valid Svelte component ready to be compiled.
+
+[remark] has a vibrant plugin ecosystem and mdsvex allows you to pass any [remark plugins][remark_plugins] as options, which will run on the remark AST at the correct point in the pipeline.
+
+This option takes an array. If you do not wish to pass any options to a plugin then you can simply pass an array of plugins like so:
+
+```js
+import containers from "remark-containers";
+import github from "remark-github";
+
+mdsvex({
+	remarkPlugins: [containers, github]
+});
+```
+
+If you _do_ wish to pass options to your plugins then those array items should be an array of `[plugin, options]`, like so:
+
+```js
+import containers from "remark-containers";
+import github from "remark-github";
+
+mdsvex({
+	remarkPlugins: [
+		[containers, container_opts],
+		[github, github_opts]
+	]
+});
+```
+
+You can mix and match as needed, only providing an array when options are needed:
+
+```js
+import containers from "remark-containers";
+import github from "remark-github";
+
+mdsvex({
+	remarkPlugins: [
+		[containers, container_opts],
+		github,
+		another_plugin,
+		[yet_another_plugin, more_options]
+	]
+});
+```
+
+Remark plugins work on the Markdown AST (MDAST) produced by remark and it is very easy to write your own custom plugins if the existing ones do not satisfy your needs!
+
 ### `rehypePlugins`
+
+```ts
+rehypePlugins: Array<plugin> | Array<[plugin, plugin_options]>;
+```
+
+mdsvex has a simple pipeline. Your source file is first parsed into a Markdown AST (MDAST) by [remark], this is where remark plugins would run. Then it is converted into an HTML AST (HAST) by [rehype], this is where rehype plugins would be run. After this is it converted (stringified) into a valid Svelte component ready to be compiled.
+
+[rehype] has a vibrant plugin ecosystem and mdsvex allows you to pass any [rehype plugins][rehype_plugins] as options, which will run on the rehype AST at the correct point in the pipeline.
+
+The `rehypePlugins` option is remarkably similar to the `remarkPlugins` option, except it is for rehype plugins rather than remark ones.
+
+This option takes an array. If you do not wish to pass any options to a plugin then you can simply pass an array of plugins like so:
+
+```js
+import containers from "remark-containers";
+import github from "remark-github";
+
+mdsvex({
+	rehypePlugins: [containers, github]
+});
+```
+
+If you _do_ wish to pass options to your plugins then those array items should be an array of `[plugin, options]`, like so:
+
+```js
+import containers from "remark-containers";
+import github from "remark-github";
+
+mdsvex({
+	rehypePlugins: [
+		[containers, container_opts],
+		[github, github_opts]
+	]
+});
+```
+
+You can mix and match as needed, only providing an array when options are needed:
+
+```js
+import containers from "remark-containers";
+import github from "remark-github";
+
+mdsvex({
+	rehypePlugins: [
+		[containers, container_opts],
+		github,
+		another_plugin,
+		[yet_another_plugin, more_options]
+	]
+});
+```
+
+Remark plugins work on the HTML AST (HAST) produced by rehype and it is very easy to write your own custom plugins if the existing ones do not satisfy your needs!
 
 ## Frontmatter
 
-### variables
+YAML front-matter is a common convention in blog posts and mdsvex supports it out of the box. If you wnat to use a custom language in front-matter than you can pass a custom [`frontmatter`](docs#frontmatter) function to the mdsvex preprocessor.
+
+### Variables
+
+All variables defined in front-matter are available directly in the component, exactly as you wrote them:
+
+```mdsvex
+---
+title: My lovely article
+author: Dr. Fabuloso the Fabulous
+---
+
+# {title} by {author}
+
+Some amazing content.
+```
+
+These same variable are also passed to the layout for that page (if you are using one) as props, allowing you to do some fun stuff. The above mdsvex file would compile to something that looks like:
+
+```svelte
+<Layout {title} {author}>
+  <h1>{title} by {author}</h1>
+  <p>Some amazing content.</p>
+</Layout>
+```
+
+Inside the layout, you can expect these values and play around with them:
+
+```svelte
+<script>
+
+
+  import Author from './Author.svelte';
+  export let title;
+  export let author;
+</script>
+
+<article>
+
+  <h1>{title}</h1>
+
+  <Author>
+    The amazing: {author}
+  </Author>
+
+  <slot></slot>
+
+</article>
+```
+
+Additionally, all of these variables are exported as a single object named `metadata` from the `context="module"` script, so they can easily be imported in javascript:
+
+```svelte
+<script context="module">
+  export let metadata = {
+    title: "My lovely article",
+    author: "Dr. Fabuloso the Fabulous"
+  };
+</script>
+```
+
+Due to how `context="module"` scripts work, this metadata can be imported like this:
+
+```js
+import { metadata } from "./some-mdsvex-file.svexy";
+```
 
 ### layout
 
 ### components
 
 ## Integrations
-
-<!--
-> ⚠️ MAKE SURE TO DOCUMENT THIS IN BOTH CLIENT AND SERVER PLUGIN CODE in rollup/webpack
-
-Also, when you run `sapper dev` or `sapper export`, you have to run it with the `--ext` flag, like this:
-
-```
-
-"start": "sapper dev --ext '.svexy .svelte'",
-"export": "sapper export --ext '.svexy .svelte'",
-
-```
-
-## Please, more.
-
-### Executing Code
-
-You can 'execute' javascript by defining a `js exec` fenced code block, these components and variables will then be available within the MDsveX file:
-
-````mdsvex
-```js exec
-import Counter from './path/to/Counter.svelte';
-
-let number = 500;
-````
-
-<Counter count="{number}" />
-
-Inline components <Counter count="{5}" /> are absolute fine too.
-
-`````
-
-Use `js exec` blocks instead of script blocks because you can have as many `js exec` blocks as you want. And I can't remember if I tested script blocks.
-
-You can also create [module scripts](https://svelte.dev/docs#script_context_module), if you so desire, by using `js module`:
-
-````mdsvex
-```js module
-  export function someFunction(value) {
-    // some stuff here
-  }
-```
-
-<Counter />
-
-````
-
-### Styling
-
-If you wish to style your markdown _inside_ an MDsveX file then you can do so with a `css style` fenced code block. Fenced style blocks ensure `style` elements are _always_ top level, which is required by Svelte, and prevents any problems with markdown interpreting your styles as text. You can use multiple fenced style blocks if you wish, they will be combined into a single style element:
-
-````mdsvex
-# Hello friends
-
-```css style
-  h1 {
-    font-weight: 100;
-  }
-```
-````
-
-You can also use compile to js languages if you so desire, simply change `css` to the language of your choosing. Languages other than `css` applies a `lang="language"` attribute to the processed component allowing other Svelte preprocessors to transform those styles into plain CSS, as required by Svelte:
-
-````mdsvex
-# Hello friends
-
-```scss style
-  h1 {
-    font-weight: 100;
-  }
-```
-````
-
-Will produce:
-
-```svelte
-<h1>Hello friends</h1>
-
-<style lang="scss>
-  h1 {
-    font-weight: 100
-  }
-</style>
-```
-
-Magic!
-
-### Front-Matter
-
-You can add some YAML front-matter if you like. The variables and values defined in YAML front-matter are injected into the component's module script tag and are available in the MDsveX file. They are contained in an object named `_metadata`:
-
-````mdsvex
----
-number: 500
----
-
-```js exec
-import Counter from './path/to/Counter.svelte';
-
-```
-
-<Counter count="{_metadata.number}" />
-````
-
-This object is also exported from the module script tag, allowing you to import this metadata from the component for use elsewhere:
-
-```js
-import { _metadata } from "./article.svexy";
-```
-
-### Escaped Curlywurlies
-
-Curlywurlies (`{` and `}`) are pretty special in Svelte components but this might be annoying when you're writing code snippets in fenced code blocks, so MDSveX escapes any curlywurlies non-executable in fenced code blocks:
-
-The below is perfectly safe: the curlywurlies, which would normally cause issues, are escaped and should not bother you.
-
-````mdsvex
-```js
-function myFunction(n) {
-  return n * 2;
-}
-```
-
-I am a sentence with an inline `{ code, snippet}` and i do not break either.
-````
-
-MDsveX does not escape curlywurlies outside of fenced code blocks nor does it escape curlywurlies in `js exec` blocks, so you can use dynamic values in component props and directly in markdown. This works:
-
-````mdsvex
----
-title: "The title for my great post"
----
-
-
-```js exec
-import Counter from './path/to/Counter.svelte';
-
-let number = 500;
-let text = { text: "Some random text." }
-```
-
-# { [1, 2, 3].reduce((a, n) => a + n, 0) }
-
-
-> { [1, 2, 3].reduce((a, n) => a + n, 0) }
-
-
-
-<Counter count="{number}" />
-
-{ text.text }
-````
-
-### markdown-it plugins
-
-You can add your own `markdown-it` plugins if you are feeling adventurous. You do it in your rollup or webpack config and you do it like this:
-
-```js
-plugins: [
-    svelte({
-      extensions: ['svelte', '.svexy', '.svx'], // here actually
-      preprocess: mdsvex({
-        parser: md => md.use(myMagicalPlugin)
-        // this is the actual instance of markdown-it that will be used to parse things
-        // mdsvex adds it's mofifications after yours
-        // this could potentially break things
-      }),
-    }
-  ]
-```
-
-### Custom layouts
-
-You can add custom layouts to any individual MDsveX file or define a global default. You can optionally add a global Layout by adding an option to MDsveX. This needs to be an absolute path to a Svelte component with a `slot` element (so we can slot the actual MDsveX file in). Use `path.join(__dirname, './path/to/file.svelte')` or similar to avoid tragedy:
-
-```js
-import { mdsvex } from 'mdsvex';
-import path from 'path';
-
-export default {
-  ...boringConfigStuff,
-  plugins: [
-    svelte({
-      preprocess: mdsvex({
-        layout: path.join(__dirname, './DefaultLayout.svelte'),
-      }),
-    }
-  ]
-}
-```
-
-You can also add a layout to an individual MDsveX file by declaring it in YAML front-matter under the `layout` property. When defined in front-matter, paths are relative to the location of that file:
-
-```yaml
----
-layout: ./path/to/file.svelte
----
-# Your markdown goes here
-```
-
-Layouts defined in front-matter always take priority over global layouts, if they are defined. If there is no global layout then the local layout will still be used.
-
-Layout components will receive all front-matter properties as props, so you can use things like titles, dates or cover images in your layout component and do snazzy stuff, without the headache of doing it manually. All front-matter values will be passed down, simply `export let` those values in your layout to make use of them. If you try to use a value in a layout that isn't defined in front-matter then Svelte will complain and your page will be plagued with `undefined` and broken-ness (unless you set defaults in the layout).
-
-These are all just Svelte components at the end of the day, so refer to the Svelte [tutorial](https://svelte.dev/tutorial) and [documentation](https://svelte.dev/docs) if you are unsure how it all works. A Sapper/MDsveX template is also in the works (and by 'in the works' I mean that I haven't started it yet).
--->
 
 [svelte]: https://svelte.dev/
 [mdx]: https://mdxjs.com/
@@ -461,3 +544,11 @@ These are all just Svelte components at the end of the day, so refer to the Svel
 [rehype]: https://github.com/rehypejs/rehype
 [remark_plugins]: https://github.com/remarkjs/remark/blob/master/doc/plugins.md#list-of-plugins
 [rehype_plugins]: https://github.com/rehypejs/rehype/blob/master/doc/plugins.md#list-of-plugins
+
+```
+
+```
+
+```
+
+```

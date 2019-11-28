@@ -55,7 +55,7 @@ body {
 		Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
 }
 
-@font-face {
+/* @font-face {
 	font-family: "Overpass";
 	font-style: normal;
 	font-weight: 300;
@@ -71,7 +71,7 @@ body {
 	font-family: "Fira Mono";
 	font-style: normal;
 	font-weight: 400;
-}
+} */
 
 html {
 	font-size: 62.5%;
