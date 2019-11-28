@@ -533,7 +533,65 @@ import { metadata } from "./some-mdsvex-file.svexy";
 
 ### layout
 
+Defining a `layout` field in frontmatter allows you to prove a custom layout that applies to that mdsvex file only. This layout will take priority over layouts passed as options to the preprocessor.
+
+```mdsvex
+---
+layout: ./path/to/Layout.svelte
+---
+```
+
+Paths provided in front-matter should follow the same rule as javascript imports (they can be npm modules, absolute paths or relative to the current file).
+
 ### components
+
+As with layouts, you may want to pass custom components that only apply to a specific mdsvex file. You can do this by adding a `components` field to your frontmatter which shoudl be an object mapping elements to custom components:
+
+Components defined in frontmatter will take priority over those passed as options to the preprocessor:
+
+```mdsvex
+---
+components:
+  p: ./path/to/P.svelte
+  h1: ./path/to/h1.svelte
+---
+```
+
+Paths provided in front-matter should follow the same rules as javascript imports (they can be npm modules, absolute paths or relative to the current file).
+
+It is important to note that components defined in the preprocessor will be merged with components defined in frontmatter.
+
+If you do this:
+
+```js
+mdsvex({
+  components: {
+    p: './path/to/P.svelte'
+    h1: './path/to/h1.svelte'
+  }
+})
+```
+
+```mdsvex
+---
+components:
+  p: ./path/to/OtherP.svelte
+---
+```
+
+The custom `h1` component passed into the preprocessor will still be used, only the `p` component will be overwritten. This allows you to overwrite specific custom components as needed.
+
+If you wish to revert elements to their normal HTML element, preventing the use of custom components then you can pass `false` instead:
+
+```mdsvex
+---
+components:
+  p: ./path/to/OtherP.svelte
+  h1: false
+---
+```
+
+In this case the `p` element will be replaced with a new custom component and the `h1` element will default back to `<h1>` even though a custom `h1` was passed into the preprocessor.
 
 ## Integrations
 
@@ -544,11 +602,3 @@ import { metadata } from "./some-mdsvex-file.svexy";
 [rehype]: https://github.com/rehypejs/rehype
 [remark_plugins]: https://github.com/remarkjs/remark/blob/master/doc/plugins.md#list-of-plugins
 [rehype_plugins]: https://github.com/rehypejs/rehype/blob/master/doc/plugins.md#list-of-plugins
-
-```
-
-```
-
-```
-
-```
