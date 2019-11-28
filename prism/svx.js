@@ -297,7 +297,6 @@
 				 *     <span class="punctuation">```</span>
 				 * ];
 				 */
-				console.log(token.content);
 				var codeLang = token.content[1];
 				var codeBlock = token.content[3];
 
