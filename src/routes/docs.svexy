@@ -16,13 +16,17 @@ nav:
       ],
     ]
   - [
+      Layouts,
+      docs#layouts,
+      [
+        [named layouts, docs#named-layouts, false],
+        [custom components, docs#custom-components, false],
+      ],
+    ]
+  - [
       Frontmatter,
       docs#frontmatter,
-      [
-        [variables, docs#variables, false],
-        [layouts, docs#layout-1, false],
-        [components, docs#components-1, false],
-      ],
+      [[variables, docs#variables, false], [layouts, docs#layout-1, false]],
     ]
   - [Integrations, docs#integrations]
 ---
@@ -98,10 +102,7 @@ The preprocessor function accepts an object of options, that allow you to custom
 interface MdsvexOptions {
 	extension: string;
 	smartypants: boolean | smartypantsOptions;
-	layout: string | Array<string | RegExp, string>;
-	components:
-		| { [element: string]: string }
-		| Array<string | RegExp, { [element: string]: string }>;
+	layout: string | { [name: string]: string };
 	remarkPlugins: Array<plugin> | Array<[plugin, plugin_options]>;
 	rehypePlugins: Array<plugin> | Array<[plugin, plugin_options]>;
 }
@@ -233,124 +234,15 @@ mdsvex({
 });
 ```
 
-In some cases you may want different layouts for different types of document, to address this you may pass an array instead of a string. Each item should also be an array containing only two elements (a tuple). The first element should either be a `string` or a `RegExp` object. The second should be a path pointing to your layout component, as described above.
-
-The `string` or `RegExp` is used to test the path of the mdsvex document. The first passing test will be used, so depending on your requirements, the order may be important. This also allows you to pass a wildcard or default layout at the end.
-
-As an example, you may have two folders containing mdsvex documents and want to use different layouts for each, you could do something like this:
+In some cases you may want different layouts for different types of document, to address this you may pass an object of named layouts instead. Each key should be a name for your layout, the value should be a path as described above. A fallback layout, or default, can be passed using `_` (underscore) as a key name.
 
 ```js
 mdsvex({
-	layouts: [
-		["/blog/", "./path/to/blog/layout.svelte"],
-		["/article/", "./path/to/article/layout.svelte"]
-	]
-});
-```
-
-In the above case, any mdsvex document containing `/blog/` would use `"./path/to/blog/layout.svelte"` as a layout, documents in `/article/` would use `"./path/to/article/layout.svelte"`. Anything that did not match however would not get a layout. You could provide a default or wildcard by either passing an empty string `""` or a Regular expresison that matches anything (like `[\s\S]*`):
-
-```js
-mdsvex({
-	layouts: [
-		["/blog/", "./path/to/blog/layout.svelte"],
-		["/article/", "./path/to/article/layout.svelte"],
-		["", "./path/to/default/layout.svelte"],
-		// or
-		[/[\s\S]*/, "./path/to/default/layout.svelte"]
-	]
-});
-```
-
-### `components`
-
-```ts
-components:
- | { [element: string]: string }
- | Array<string | RegExp, { [element: string]: string }>;
-```
-
-The `components` option allows you to provide components in place of the DOM elements your markdown converts to. For example:
-
-```mdsvex
-# hello
-```
-
-Would normally produce:
-
-```svelte
-<h1>hello</h1>
-```
-
-However, you can provide a custom component to use instead, producing:
-
-```svelte
-<CustomH1>hello</CustomH1>
-```
-
-Similar to layouts, you can set these custom components by passing an object that should map DOM elements to components. Just like layouts, it is safer if these are absolute paths to the replacement component, but mdsvex tries to resolve them based on the current working directory.
-
-```js
-mdsvex({
-	components: {
-		p: "./CustomP.svelte",
-		h1: "./CustomH1.svelte"
+	layouts: {
+		blog: "./path/to/blog/layout.svelte",
+		article: "./path/to/article/layout.svelte",
+		_: "./path/to/fallback/layout.svelte"
 	}
-});
-```
-
-As with layouts, you may want different types of document to use different custom components. In these instances, you can provide an array. Each item should also be an array containing only two elements (a tuple). The first element should either be a `string` or a `RegExp` object. The second should be an object mapping elements to components, as above.
-
-The `string` or `RegExp` is used to test the path of the mdsvex document. The first passing test is used: depending on your requirements, the order may be important. This also allows you to pass a 'wildcard' or 'default' layout at the end.
-
-```js
-mdsvex({
-	components: [
-		[
-			"/blog/",
-			{
-				p: "./CustomP.svelte",
-				h1: "./CustomH1.svelte"
-			}
-		],
-		[
-			"/article/",
-			{
-				p: "./CustomP-2.svelte",
-				h1: "./CustomH1-2.svelte"
-			}
-		]
-	]
-});
-```
-
-In the above case, any mdsvex documents matching `/blog/` would use the provided components, documents matching `/article/` would use a different set. Anything that did not match however would use the default DOM elements. You could provide a default or wildcard 'match' by either passing an empty string `""` or a Regular expresison that matches anything (like `[\s\S]*`):
-
-```js
-mdsvex({
-	components: [
-		[
-			"/blog/",
-			{
-				p: "./CustomP.svelte",
-				h1: "./CustomH1.svelte"
-			}
-		],
-		[
-			"/article/",
-			{
-				p: "./CustomP-2.svelte",
-				h1: "./CustomH1-2.svelte"
-			}
-		],
-		[
-			"",
-			{
-				p: "./DefaultP-2.svelte",
-				h1: "./DefaultH1-2.svelte"
-			}
-		]
-	]
 });
 ```
 
@@ -462,6 +354,78 @@ mdsvex({
 
 Remark plugins work on the HTML AST (HAST) produced by rehype and it is very easy to write your own custom plugins if the existing ones do not satisfy your needs!
 
+## Layouts
+
+Layouts are one of the more powerful features available in mdsvex and allow for a great deal of flexibility. At their simplest a layout is just a component that wraps an mdsvex document. Providing a string as the layout option will enable this behaviour:
+
+```js
+mdsvex({
+	layout: "./path/to/layout.svelte"
+});
+```
+
+Layouts receive all values defined in front matter as props:
+
+```svelte
+<Layout {...props} >
+  <!-- mdsvex content here -->
+</Layout>
+```
+
+You can then use these values in your layout however you wish, a typical use might be to define some fancy formatting for headings, authors, and dates. Although you could do all kinds of wonderful things.
+
+```svelte
+<script>
+  export let title;
+  export let author;
+  export let date;
+</script>
+
+<h1>{ title }</h1>
+<p class="date">on: { date }</p>
+<p class="date">by: { author }</p>
+```
+
+### Named Layouts
+
+In some cases you may want different layouts for different types of document. To address this you may pass an object of named layouts instead. Each key should be a name for your layout, the value should be a path to that layout file. A fallback layout, or default, can be passed using `_` (underscore) as a key name.
+
+```js
+mdsvex({
+	layouts: {
+		blog: "./path/to/blog/layout.svelte",
+		article: "./path/to/article/layout.svelte",
+		_: "./path/to/fallback/layout.svelte"
+	}
+});
+```
+
+If you pass an object of named layouts, you can decide which layout to use on a file-by-file basis by declaraing it the front-matter. For example, if you wanted to force a document to be wrapped with the `blog` layout you would do the following:
+
+```mdsvex
+---
+layout: blog
+---
+```
+
+If you are using named layouts and do not have a layout field in the front-matter then mdsvex will try to pick the correct one based on the folder a file is stored in. Take the following folder structure:
+
+```
+.
+├── blog
+│   └── my-blog-post.svexy
+└── article
+    └── my-article.svexy
+```
+
+If there is a layout named `blog` and `article` then documents in the `blog` folder will use the `blog` layout, articles in the `articles` folder will use the `article` layout. mdsvex will try to check both singular and pluralised names, as you may have named a folder `events` but the matching layout could be named `event` but having the same folder and layout name will make this process more reliable. The current working directory is removed from the path when checking for matches but nested folder can still cause problems if there are conflicts—shallow folder structures and unique folder and layout names will prevent these kinds of collisions.
+
+If there is no matching layout then the fallback layout (`_`) will be applied, if there is no fallback then no layout will be applied.
+
+Layouts
+
+### Custom Components
+
 ## Frontmatter
 
 YAML front-matter is a common convention in blog posts and mdsvex supports it out of the box. If you wnat to use a custom language in front-matter than you can pass a custom [`frontmatter`](docs#frontmatter) function to the mdsvex preprocessor.
@@ -494,8 +458,6 @@ Inside the layout, you can expect these values and play around with them:
 
 ```svelte
 <script>
-
-
   import Author from './Author.svelte';
   export let title;
   export let author;
@@ -531,7 +493,7 @@ Due to how `context="module"` scripts work, this metadata can be imported like t
 import { metadata } from "./some-mdsvex-file.svexy";
 ```
 
-### layout
+### layouts
 
 Defining a `layout` field in frontmatter allows you to prove a custom layout that applies to that mdsvex file only. This layout will take priority over [layouts passed as options to the preprocessor](docs#layout).
 
@@ -542,56 +504,6 @@ layout: ./path/to/Layout.svelte
 ```
 
 Paths provided in front-matter should follow the same rule as javascript imports (they can be npm modules, absolute paths or relative to the current file).
-
-### components
-
-As with layouts, you may want to pass custom components that only apply to a specific mdsvex file. You can do this by adding a `components` field to your frontmatter which shoudl be an object mapping elements to custom components:
-
-Components defined in frontmatter will take priority over [components passed as options to the preprocessor](docs#components):
-
-```mdsvex
----
-components:
-  p: ./path/to/P.svelte
-  h1: ./path/to/h1.svelte
----
-```
-
-Paths provided in front-matter should follow the same rules as javascript imports (they can be npm modules, absolute paths or relative to the current file).
-
-It is important to note that components defined in the preprocessor will be merged with components defined in frontmatter.
-
-If you do this:
-
-```js
-mdsvex({
-  components: {
-    p: './path/to/P.svelte'
-    h1: './path/to/h1.svelte'
-  }
-})
-```
-
-```mdsvex
----
-components:
-  p: ./path/to/OtherP.svelte
----
-```
-
-The custom `h1` component passed into the preprocessor will still be used, only the `p` component will be overwritten. This allows you to overwrite specific custom components as needed.
-
-If you wish to revert elements to their normal HTML element, preventing the use of custom components then you can pass `false` instead:
-
-```mdsvex
----
-components:
-  p: ./path/to/OtherP.svelte
-  h1: false
----
-```
-
-In this case the `p` element will be replaced with a new custom component and the `h1` element will default back to `<h1>` even though a custom `h1` was passed into the preprocessor.
 
 ## Integrations
 
