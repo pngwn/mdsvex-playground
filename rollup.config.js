@@ -31,7 +31,7 @@ export default {
 				"process.env.NODE_ENV": JSON.stringify(mode)
 			}),
 			svelte({
-				preserveWhitespace: true,
+				//preserveWhitespace: true,
 				extensions: [".svelte", ".svexy"],
 				preprocess: mdsvex({
 					remarkPlugins: [[highlighter, { highlight }]],
