@@ -1,7 +1,5 @@
 <script>
   export let nav;
-
-  console.log(nav);
 </script>
 
 <style>

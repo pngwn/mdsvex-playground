@@ -7,6 +7,7 @@ import "prismjs/components/prism-jsx";
 import "./svx.js";
 import "prismjs/components/prism-yaml";
 import "prismjs/components/prism-scss";
+import "prismjs/components/prism-toml";
 
 const langs = {
 	html: "markup",
@@ -19,7 +20,8 @@ const langs = {
 	mdsvex: "mdsvex",
 	yaml: "yaml",
 	scss: "scss",
-	sig: "ts"
+	sig: "ts",
+	toml: "toml"
 };
 
 export function highlight(code, lang) {

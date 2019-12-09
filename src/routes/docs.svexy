@@ -10,9 +10,9 @@ nav:
         [extension, docs#extension, true],
         [smartypants, docs#smartypants, true],
         [layout, docs#layout, true],
-        [components, docs#components, true],
         [remarkPlugins, docs#remarkplugins, true],
         [rehypePlugins, docs#rehypeplugins, true],
+        [frontmatter, docs#frontmatter, true],
       ],
     ]
   - [
@@ -23,11 +23,7 @@ nav:
         [custom components, docs#custom-components, false],
       ],
     ]
-  - [
-      Frontmatter,
-      docs#frontmatter,
-      [[variables, docs#variables, false], [layouts, docs#layout-1, false]],
-    ]
+  - [Frontmatter, docs#frontmatter-1]
   - [Integrations, docs#integrations]
 ---
 
@@ -105,6 +101,7 @@ interface MdsvexOptions {
 	layout: string | { [name: string]: string };
 	remarkPlugins: Array<plugin> | Array<[plugin, plugin_options]>;
 	rehypePlugins: Array<plugin> | Array<[plugin, plugin_options]>;
+	frontmatter: { parse: Function; marker: string };
 }
 ```
 
@@ -354,6 +351,76 @@ mdsvex({
 
 Remark plugins work on the HTML AST (HAST) produced by rehype and it is very easy to write your own custom plugins if the existing ones do not satisfy your needs!
 
+### `frontmatter`
+
+```ts
+frontmatter: { parse: Function, marker: string };
+```
+
+By default mdsvex supports yaml frontmatter, this is defined by enclosing the YAML in thre hyphens (`---`). If you want to use a custom language or marker for frontmatter then you can use the `frontmatter` option.
+
+`frontmatter` should be an object that can be a passed a `marker` and a `parse` property.
+
+```sig
+marker: string = '-';
+```
+
+The marker option defines the fence for your frontmatter. This defaults to `-` which corresponds to the standard triple-hyphen syntax (`---`) that you would normally use to define frontmatter. You can pass in a custom string to change this behaviour:
+
+```js
+mdsvex({
+	frontmatter: {
+		marker: "+"
+	}
+});
+```
+
+Now you can use `+++` to mark frontmatter. Setting _only_ the marker will keep the default frontmatter parser which only supports YAML.
+
+```sig
+parse: (frontmatter, message) => Object | undefined
+```
+
+The `parse` property accepts a function which allows you to provide a custom parser for frontmatter. This is useful if you want to use a different language in your frontmatter.
+
+The parse function gets the raw frontmatter as the first argument and a `messages` array as the second.
+
+The function should return the parsed frontmatter (as an object of key-value pairs) if parsing is successful and return undefined or false if there is a problem. Any parsing errors or warnings should be pushed into the `messages` array which will be printed to the user at when mdsvex has finished parsing. If you would prefer to throw an error, you are free to do so but it will interupt the parsing process.
+
+In the following example, we will modify the frontmatter handling so we can write our frontmatter in TOML with a triple-`+` fence.
+
+```js
+mdsvex({
+	marker: "+",
+	parse(frontmatter, messages) {
+		try {
+			return toml.parse(frontmatter);
+		} catch (e) {
+			messages.push(
+				"Parsing error on line " +
+					e.line +
+					", column " +
+					e.column +
+					": " +
+					e.message
+			);
+		}
+	}
+});
+```
+
+Now we will be able to write TOML frontmatter:
+
+```mdsvex
++++
+title = "TOML Example"
+
+[owner]
+name = "some name"
+dob = 1879-05-27T07:32:00-08:00 # First class dates
++++
+```
+
 ## Layouts
 
 Layouts are one of the more powerful features available in mdsvex and allow for a great deal of flexibility. At their simplest a layout is just a component that wraps an mdsvex document. Providing a string as the layout option will enable this behaviour:
@@ -364,7 +431,7 @@ mdsvex({
 });
 ```
 
-Layouts receive all values defined in front matter as props:
+Layouts receive all values defined in frontmatter as props:
 
 ```svelte
 <Layout {...props} >
@@ -372,7 +439,7 @@ Layouts receive all values defined in front matter as props:
 </Layout>
 ```
 
-You can then use these values in your layout however you wish, a typical use might be to define some fancy formatting for headings, authors, and dates. Although you could do all kinds of wonderful things.
+You can then use these values in your layout however you wish, a typical use might be to define some fancy formatting for headings, authors, and dates. Although you could do all kinds of wonderful things. You just need to make sure you provide a default `slot` so the mdsvex content can be passed into your layout and rendered.
 
 ```svelte
 <script>
@@ -384,11 +451,14 @@ You can then use these values in your layout however you wish, a typical use mig
 <h1>{ title }</h1>
 <p class="date">on: { date }</p>
 <p class="date">by: { author }</p>
+<slot>
+  <!-- the mdsvex content will be slotted in here -->
+</slot>
 ```
 
 ### Named Layouts
 
-In some cases you may want different layouts for different types of document. To address this you may pass an object of named layouts instead. Each key should be a name for your layout, the value should be a path to that layout file. A fallback layout, or default, can be passed using `_` (underscore) as a key name.
+In some cases you may want different layouts for different types of document. To address this you can pass an object of named layouts instead. Each key should be a name for your layout, the value should be the path to that layout file. A fallback layout, or default, can be passed using `_` (underscore) as a key name.
 
 ```js
 mdsvex({
@@ -400,7 +470,7 @@ mdsvex({
 });
 ```
 
-If you pass an object of named layouts, you can decide which layout to use on a file-by-file basis by declaraing it the front-matter. For example, if you wanted to force a document to be wrapped with the `blog` layout you would do the following:
+If you pass an object of named layouts, you can decide which layout to use on a file-by-file basis by declaraing it the frontmatter. For example, if you wanted to force a document to be wrapped with the `blog` layout you would do the following:
 
 ```mdsvex
 ---
@@ -408,7 +478,7 @@ layout: blog
 ---
 ```
 
-If you are using named layouts and do not have a layout field in the front-matter then mdsvex will try to pick the correct one based on the folder a file is stored in. Take the following folder structure:
+If you are using named layouts and do not have a layout field in the frontmatter then mdsvex will try to pick the correct one based on the folder a file is stored in. Take the following folder structure:
 
 ```
 .
@@ -418,21 +488,82 @@ If you are using named layouts and do not have a layout field in the front-matte
     └── my-article.svexy
 ```
 
-If there is a layout named `blog` and `article` then documents in the `blog` folder will use the `blog` layout, articles in the `articles` folder will use the `article` layout. mdsvex will try to check both singular and pluralised names, as you may have named a folder `events` but the matching layout could be named `event` but having the same folder and layout name will make this process more reliable. The current working directory is removed from the path when checking for matches but nested folder can still cause problems if there are conflicts—shallow folder structures and unique folder and layout names will prevent these kinds of collisions.
+If there is a layout named `blog` and `article` then documents in the `blog` folder will use the `blog` layout, articles in the `articles` folder will use the `article` layout. mdsvex will try to check both singular and pluralised names, as you may have named a folder `events` but the matching layout could be named `event`, however, having the same folder and layout name will make this process more reliable. The current working directory is removed from the path when checking for matches but nested folder can still cause problems if there are conflicts—shallow folder structures and unique folder and layout names will prevent these kinds of collisions.
 
 If there is no matching layout then the fallback layout (`_`) will be applied, if there is no fallback then no layout will be applied.
 
-Layouts
+### disabling a layout
+
+If you are using layouts but wish to diable them for a specific component, then you can set the `layout` field to `false` to prevent the application of a layout.
+
+```mdsvex
+---
+layout: false
+---
+```
 
 ### Custom Components
 
+Layouts also allow you provide custom components to any mdsvex file they are applied to. Custom components replace the elements that markdown would normally generate.
+
+```mdsvex
+# Title
+
+Some text
+
+- a
+- short
+- list
+```
+
+Would normally compile to:
+
+```svelte
+<h1>Title</h1>
+<p>Some text</p>
+<ul>
+  <li>a</li>
+  <li>short</li>
+  <li>list</li>
+</ul>
+```
+
+Custom compments allow you to replace these element with components. You can define components by exporting an object names `component` from the `context="module"` script of your Layout file:
+
+```svelte
+<script context="module">
+  import { H1, P, LI } from './components.js';
+  export const components = { h1: H1, p: P, li: LI };
+</script>
+```
+
+the `components` object must be an object of key-value pairs, the key must be the actual element you want to replace (`p`, `blockquote`, etc.), the value must be the component you wish to replace them with.
+
+The above custom components would generate:
+
+```svelte
+<script>
+  import { components as Components } from './Layout.svelte';
+</script>
+
+<Components.h1>Title</Components.h1>
+<Components.p>Some text</Components.p>
+<ul>
+  <Components.li>a</Components.li>
+  <Components.li>short</Components.li>
+  <Components.li>list</Components.li>
+</ul>
+```
+
+Notice that the `UL` is left intact: elements are replaced _after_ the markdown is parsed to HTML. This allows greater flexibility, for example, when using custom components to customise lists, tables or other markdown than compiles to a combination of different HTML elements.
+
 ## Frontmatter
 
-YAML front-matter is a common convention in blog posts and mdsvex supports it out of the box. If you wnat to use a custom language in front-matter than you can pass a custom [`frontmatter`](docs#frontmatter) function to the mdsvex preprocessor.
+YAML frontmatter is a common convention in blog posts and mdsvex supports it out of the box. If you want to use a custom language or marker for frontmatter than you can use the [`frontmatter`](docs#frontmatter) option to modify the default behaviour.
 
-### Variables
+Mdsvex integrates well with frontmatter providing additional flexibility when authoring documents.
 
-All variables defined in front-matter are available directly in the component, exactly as you wrote them:
+All variables defined in frontmatter are available directly in the component, exactly as you wrote them:
 
 ```mdsvex
 ---
@@ -443,37 +574,6 @@ author: Dr. Fabuloso the Fabulous
 # {title} by {author}
 
 Some amazing content.
-```
-
-These same variable are also passed to the layout for that page (if you are using one) as props, allowing you to do some fun stuff. The above mdsvex file would compile to something that looks like:
-
-```svelte
-<Layout {title} {author}>
-  <h1>{title} by {author}</h1>
-  <p>Some amazing content.</p>
-</Layout>
-```
-
-Inside the layout, you can expect these values and play around with them:
-
-```svelte
-<script>
-  import Author from './Author.svelte';
-  export let title;
-  export let author;
-</script>
-
-<article>
-
-  <h1>{title}</h1>
-
-  <Author>
-    The amazing: {author}
-  </Author>
-
-  <slot></slot>
-
-</article>
 ```
 
 Additionally, all of these variables are exported as a single object named `metadata` from the `context="module"` script, so they can easily be imported in javascript:
@@ -493,17 +593,7 @@ Due to how `context="module"` scripts work, this metadata can be imported like t
 import { metadata } from "./some-mdsvex-file.svexy";
 ```
 
-### layouts
-
-Defining a `layout` field in frontmatter allows you to prove a custom layout that applies to that mdsvex file only. This layout will take priority over [layouts passed as options to the preprocessor](docs#layout).
-
-```mdsvex
----
-layout: ./path/to/Layout.svelte
----
-```
-
-Paths provided in front-matter should follow the same rule as javascript imports (they can be npm modules, absolute paths or relative to the current file).
+Frontmatter also interacts with layouts, you can find more details in the [Layout section](docs#layouts).
 
 ## Integrations
 
