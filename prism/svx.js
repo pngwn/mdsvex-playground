@@ -37,10 +37,17 @@
 			alias: "punctuation"
 		},
 		frontmatter: {
-			pattern: /---\n[\s\S]+?\n---/,
+			pattern: /(---\n[\s\S]+?\n---)/,
 			inside: {
-				punctuation: /---\n/,
+				punctuation: /---(\n*)/,
 				"language-yaml": { pattern: /[\s\S]+/, inside: Prism.languages.yaml }
+			}
+		},
+		"frontmatter-toml": {
+			pattern: /\+\+\+\n[\s\S]+?\n\+\+\+/,
+			inside: {
+				punctuation: /\+\+\+(\n*)/,
+				"language-toml": { pattern: /[\s\S]+/, inside: Prism.languages.toml }
 			}
 		},
 		table: {
