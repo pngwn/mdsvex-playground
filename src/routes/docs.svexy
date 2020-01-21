@@ -71,7 +71,7 @@ yarn add --dev mdsvex
 
 ## Use it
 
-The `mdsvex` preprocessor function is a named import from the `mdsvex` module. Add it as a preprocessor to you rollup or webpack config, and tell the Svelte plugin or loader to also handle `.svexy` files:
+The `mdsvex` preprocessor function is a named import from the `mdsvex` module. Add it as a preprocessor to you rollup or webpack config, and tell the Svelte plugin or loader to also handle `.svx` files:
 
 ```js
 import { mdsvex } from "mdsvex";
@@ -81,14 +81,14 @@ export default {
 	plugins: [
 		svelte({
 			// tell svelte to handle mdsvex files
-			extensions: [".svelte", ".svexy"],
+			extensions: [".svelte", ".svx"],
 			preprocess: mdsvex()
 		})
 	]
 };
 ```
 
-> If you don't like the `.svexy` file extension, fear not, it is easily customised.
+> If you don't like the `.svx` file extension, fear not, it is easily customised.
 
 ## Options
 
@@ -110,10 +110,10 @@ interface MdsvexOptions {
 ### `extension`
 
 ```ts
-extension: string = ".svexy";
+extension: string = ".svx";
 ```
 
-The `extension` option allows you to set a custom file extension for files written in mdsvex; the default value is `.svexy`. Whatever value you choose here must be passed to the `extensions` field of `rollup-plugin-svelte` or `svelte-loader`. If you do not change the default, you must still pass the extension name to the plugin or loader config.
+The `extension` option allows you to set a custom file extension for files written in mdsvex; the default value is `.svx`. Whatever value you choose here must be passed to the `extensions` field of `rollup-plugin-svelte` or `svelte-loader`. If you do not change the default, you must still pass the extension name to the plugin or loader config.
 
 ```js
 export default {
@@ -483,9 +483,9 @@ If you are using named layouts and do not have a layout field in the frontmatter
 ```
 .
 ├── blog
-│   └── my-blog-post.svexy
+│   └── my-blog-post.svx
 └── article
-    └── my-article.svexy
+    └── my-article.svx
 ```
 
 If there is a layout named `blog` and `article` then documents in the `blog` folder will use the `blog` layout, articles in the `articles` folder will use the `article` layout. mdsvex will try to check both singular and pluralised names, as you may have named a folder `events` but the matching layout could be named `event`, however, having the same folder and layout name will make this process more reliable. The current working directory is removed from the path when checking for matches but nested folder can still cause problems if there are conflicts—shallow folder structures and unique folder and layout names will prevent these kinds of collisions.
@@ -590,7 +590,7 @@ Additionally, all of these variables are exported as a single object named `meta
 Due to how `context="module"` scripts work, this metadata can be imported like this:
 
 ```js
-import { metadata } from "./some-mdsvex-file.svexy";
+import { metadata } from "./some-mdsvex-file.svx";
 ```
 
 Frontmatter also interacts with layouts, you can find more details in the [Layout section](docs#layouts).
