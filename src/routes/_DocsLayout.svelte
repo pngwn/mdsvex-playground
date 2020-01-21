@@ -160,7 +160,6 @@
   }
 
   article :global(a) {
-    /* text-decoration: dotted; */
     color: #777;
     border-bottom: 1px solid #999;
   }
