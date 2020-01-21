@@ -11,9 +11,9 @@
     padding: 20px 30px;
     width: 300px;
     position: fixed;
-    height: 100%;
+    height: calc(100% - 140px);
     overflow-y: scroll;
-    padding-top: 30px;
+    margin-top: 140px;
   }
 
   ul {
@@ -157,6 +157,17 @@
     display: inline-block;
     padding: 2px 7px 1px;
     margin: 20px 0 0 0;
+  }
+
+  article :global(a) {
+    /* text-decoration: dotted; */
+    color: #777;
+    border-bottom: 1px solid #999;
+  }
+
+  article :global(a:hover) {
+    color: #333;
+    border-bottom: 1px solid #333;
   }
 </style>
 
