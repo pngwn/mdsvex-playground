@@ -1,30 +1,6 @@
 ---
 layout: ./_DocsLayout.svelte
-nav:
-  - [Install, docs#install-it]
-  - [Use, docs#use-it]
-  - [
-      Options,
-      docs#options,
-      [
-        [extension, docs#extension, true],
-        [smartypants, docs#smartypants, true],
-        [layout, docs#layout, true],
-        [remarkPlugins, docs#remarkplugins, true],
-        [rehypePlugins, docs#rehypeplugins, true],
-        [frontmatter, docs#frontmatter, true],
-      ],
-    ]
-  - [
-      Layouts,
-      docs#layouts,
-      [
-        [named layouts, docs#named-layouts, false],
-        [custom components, docs#custom-components, false],
-      ],
-    ]
-  - [Frontmatter, docs#frontmatter-1]
-  - [Integrations, docs#integrations]
+
 ---
 
 # mdsvex
@@ -492,7 +468,7 @@ If there is a layout named `blog` and `article` then documents in the `blog` fol
 
 If there is no matching layout then the fallback layout (`_`) will be applied, if there is no fallback then no layout will be applied.
 
-### disabling a layout
+### disabling layouts
 
 If you are using layouts but wish to diable them for a specific component, then you can set the `layout` field to `false` to prevent the application of a layout.
 
