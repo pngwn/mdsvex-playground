@@ -1,5 +1,63 @@
 <script>
-  export let nav;
+  import { stores } from "@sapper/app";
+
+  let content = "";
+  let root;
+  let scrollY = 0;
+  let current;
+
+  const { page } = stores();
+
+  const nav = [
+    ["Install", "docs#install-it"],
+    ["Use", "docs#use-it"],
+    [
+      "Options",
+      "docs#options",
+      [
+        ["extension", "docs#extension", true],
+        ["smartypants", "docs#smartypants", true],
+        ["layout", "docs#layout", true],
+        ["remarkPlugins", "docs#remarkplugins", true],
+        ["rehypePlugins", "docs#rehypeplugins", true],
+        ["frontmatter", "docs#frontmatter", true]
+      ]
+    ],
+    [
+      "Layouts",
+      "docs#layouts",
+      [
+        ["named layouts", "docs#named-layouts", false],
+        ["disabling layouts", "docs#disabling-layouts", false],
+        ["custom components", "docs#custom-components", false]
+      ]
+    ],
+    ["Frontmatter", "docs#frontmatter-1"]
+    // ["Integrations", "docs#integrations"]
+  ];
+
+  $: root && scrollY && calculate_positions();
+
+  function remove_origin(href) {
+    return href.replace(`http://${$page.host}/`, "");
+  }
+
+  function calculate_positions() {
+    current = "docs" + remove_origin(root.children[0].children[0].href);
+
+    for (let node of root.children) {
+      const tag = node.tagName;
+      // console.log(node);
+
+      if (tag === "H2" || tag === "H3") {
+        const { top } = node.getBoundingClientRect();
+        if (top > 5) {
+          break;
+        }
+        current = "docs" + remove_origin(node.children[0].href);
+      }
+    }
+  }
 </script>
 
 <style>
@@ -27,10 +85,6 @@
     font-weight: 600;
   }
 
-  /* ul > li > ul {
-    margin-left: 20px;
-  } */
-
   ul > li > ul > li {
     margin: 10px 0px;
     text-transform: none;
@@ -53,11 +107,26 @@
     -webkit-font-smoothing: initial;
     background: #eee;
     padding: 3px 6px;
+    transition: 0.3s;
   }
 
   a:hover,
-  a:hover code {
+  a:hover code,
+  a.active {
     color: #000;
+  }
+
+  a:hover code {
+    background: #ccc;
+  }
+
+  a.active {
+    font-weight: bold;
+  }
+
+  a.active code {
+    background: #333;
+    color: #eee;
   }
 
   article {
@@ -76,11 +145,11 @@
 
   article :global(h3) {
     margin-bottom: 2rem;
-    margin-top: 5rem;
+    margin-top: 3rem;
   }
 
   article :global(h4) {
-    margin-top: 4rem;
+    margin-top: 2rem;
     margin-bottom: 2rem;
   }
 
@@ -130,7 +199,7 @@
   }
 
   article :global(h2) {
-    margin: 7rem 0 3rem 0;
+    margin: 5rem 0 3rem 0;
     border-bottom: 1px solid #ccc;
   }
 
@@ -168,24 +237,43 @@
     color: #333;
     border-bottom: 1px solid #333;
   }
+
+  article :global(h1 a),
+  article :global(h2 a),
+  article :global(h3 a),
+  article :global(h4 a) {
+    display: block;
+    height: 100%;
+    width: 0;
+    padding-top: 30px;
+  }
 </style>
+
+<svelte:window bind:scrollY />
 
 <main>
   <nav>
     <ul>
       {#each nav as [title, href, children]}
         <li class={children ? 'solo' : 'solo'}>
-          <a {href}>{title}</a>
+          <a
+            class:active={current === href}
+            {href}
+            on:click={() => (current = href)}>
+            {title}
+          </a>
           {#if children}
             <ul>
               {#each children as [child_title, child_link, is_code]}
                 <li>
                   {#if is_code}
-                    <a href={child_link}>
+                    <a class:active={current === child_link} href={child_link}>
                       <code>{child_title}</code>
                     </a>
                   {:else}
-                    <a href={child_link}>{child_title}</a>
+                    <a class:active={current === child_link} href={child_link}>
+                      {child_title}
+                    </a>
                   {/if}
                 </li>
               {/each}
@@ -196,7 +284,8 @@
     </ul>
   </nav>
 
-  <article>
+  <article bind:this={root}>
     <slot />
+    {@html content}
   </article>
 </main>
