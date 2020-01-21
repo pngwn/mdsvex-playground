@@ -4,9 +4,9 @@
 
 <style>
   nav {
-    position: fixed;
+    position: absolute;
     top: 0;
-    left: 0;
+    left: 25px;
   }
 
   ul {
