@@ -13,7 +13,7 @@
     position: fixed;
     height: 100%;
     overflow-y: scroll;
-    padding-top: 164px;
+    padding-top: 30px;
   }
 
   ul {

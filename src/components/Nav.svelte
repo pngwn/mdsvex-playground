@@ -4,16 +4,18 @@
 
 <style>
   nav {
-    position: absolute;
+    position: fixed;
     top: 0;
-    right: 0;
+    left: 0;
   }
 
   ul {
     list-style: none;
     display: flex;
     justify-content: flex-end;
+    flex-direction: row-reverse;
     padding: 10px;
+    margin: 10px;
   }
 
   li {
@@ -36,7 +38,7 @@
   }
 
   a :global(svg) {
-    margin: 5px 5px 0 0;
+    margin: 3px 5px 0 0;
     width: 20px;
     height: 20px;
     opacity: 0.8;
