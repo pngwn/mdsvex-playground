@@ -250,9 +250,9 @@ div.CodeMirror span.CodeMirror-nonmatchingbracket {
 	overflow: scroll !important; /* Things will break if this is overridden */
 	/* 30px is the magic margin used to hide the element's real scrollbars */
 	/* See overflow: hidden in .CodeMirror */
-	margin-bottom: -30px;
-	margin-right: -30px;
-	padding-bottom: 30px;
+	margin-bottom: -24px;
+	margin-right: -24px;
+	padding-bottom: 0;
 	height: 100%;
 	outline: none; /* Prevent dragging from highlighting the element */
 	position: relative;
@@ -277,10 +277,7 @@ div.CodeMirror span.CodeMirror-nonmatchingbracket {
 	right: 0;
 	top: 0;
 	overflow-x: hidden;
-	overflow-y: scroll;
-}
-.CodeMirror-vscrollbar::-webkit-scrollbar-thumb {
-	background-color: #eee;
+	overflow-y: hidden;
 }
 
 .CodeMirror-hscrollbar {

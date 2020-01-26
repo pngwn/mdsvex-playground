@@ -119,7 +119,6 @@
     border: none;
     padding: 12px 34px 8px 8px;
     margin: 0;
-    color: #eee;
     border-radius: 0;
   }
 
@@ -130,7 +129,6 @@
   .file-tabs .button.active {
     font-size: 1.6rem;
     font-weight: bold;
-    color: orange;
   }
 
   .editable,
@@ -208,6 +206,7 @@
     stroke-linecap: round;
     stroke-linejoin: round;
     fill: none;
+    transform: translate(-12px, 3px);
   }
 
   .file-tabs.funky {

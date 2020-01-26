@@ -48,7 +48,6 @@
     margin: auto;
     border-radius: 5px;
     overflow: hidden;
-    background: #222;
     box-shadow: 0 0 10px 3px rgba(0, 0, 0, 0.2);
   }
 </style>

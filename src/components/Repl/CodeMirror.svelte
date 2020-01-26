@@ -75,6 +75,9 @@
     svelte: {
       name: "handlebars",
       base: "text/html"
+    },
+    svexy: {
+      name: "gfm"
     }
   };
 
@@ -162,8 +165,7 @@
       },
       readOnly: readonly,
       autoCloseBrackets: true,
-      autoCloseTags: true,
-      theme: "ayu-dark"
+      autoCloseTags: true
     };
 
     if (!tab)
@@ -213,7 +215,6 @@
     background: transparent;
     font: 400 14px/1.7 var(--font-mono);
     padding: 24px;
-    color: #eee;
   }
 
   .codemirror-container.flex :global(.CodeMirror) {

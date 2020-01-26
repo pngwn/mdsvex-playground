@@ -21,6 +21,8 @@
   export let injectedCSS;
   export let funky = false;
 
+  $: console.log(injectedCSS);
+
   let foo; // TODO workaround for https://github.com/sveltejs/svelte/issues/2122
 
   register_output({
@@ -115,7 +117,7 @@
   .tab-content {
     position: absolute;
     width: 100%;
-    height: calc(100% - 42px) !important;
+    height: 100% !important;
     opacity: 0;
     pointer-events: none;
   }
@@ -127,6 +129,7 @@
   }
 </style>
 
+<!--
 <div class="view-toggle">
   <button class:active={view === 'result'} on:click={() => (view = 'result')}>
     Result
@@ -139,7 +142,7 @@
   <button class:active={view === 'css'} on:click={() => (view = 'css')}>
     CSS output
   </button>
-</div>
+</div> -->
 
 <!-- component viewer -->
 <div class="tab-content" class:visible={view === 'result'}>
@@ -154,7 +157,7 @@
 </div>
 
 <!-- js output -->
-<div class="tab-content" class:visible={view === 'js'}>
+<!-- <div class="tab-content" class:visible={view === 'js'}>
   {#if embedded}
     <CodeMirror
       bind:this={js_editor}
@@ -176,13 +179,13 @@
       </div>
     </PaneWithPanel>
   {/if}
-</div>
+</div> -->
 
 <!-- css output -->
-<div class="tab-content" class:visible={view === 'css'}>
+<!-- <div class="tab-content" class:visible={view === 'css'}>
   <CodeMirror
     bind:this={css_editor}
     mode="css"
     errorLoc={sourceErrorLoc}
     readonly />
-</div>
+</div> -->

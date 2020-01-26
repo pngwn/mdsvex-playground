@@ -97,8 +97,7 @@
   .divider::after {
     content: "";
     position: absolute;
-    /* background-color: #eee; */
-    background-color: var(--second);
+    background-color: #eee;
   }
 
   .horizontal {

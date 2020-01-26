@@ -27,7 +27,7 @@
 
 <style>
   .panel-header {
-    height: 42px;
+    /* height: 42px; */
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -36,7 +36,7 @@
   }
 
   .panel-body {
-    max-height: calc(100% - 42px);
+    /* max-height: calc(100% - 42px); */
     overflow: auto;
   }
 
