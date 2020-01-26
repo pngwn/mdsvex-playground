@@ -12,11 +12,30 @@ import link from "rehype-autolink-headings";
 
 import { highlight, highlighter } from "./prism/prism.js";
 
+import { extname } from "path";
+
 const mode = process.env.NODE_ENV;
 const dev = mode === "development";
 const legacy = !!process.env.SAPPER_LEGACY_BUILD;
 
 import { mdsvex } from "mdsvex";
+
+function mdsvex_transform() {
+	return {
+		async transform(code, id) {
+			if (extname(id) !== ".svexy") return;
+
+			const c = (
+				await mdsvex({
+					remarkPlugins: [[highlighter, { highlight }]],
+					rehypePlugins: [slug, link]
+				}).markup({ content: code, filename: id })
+			).code.replace("`", "\\");
+
+			return `export default \`${c}\`;`;
+		}
+	};
+}
 
 export default {
 	client: {
@@ -30,13 +49,9 @@ export default {
 				"process.browser": true,
 				"process.env.NODE_ENV": JSON.stringify(mode)
 			}),
+			mdsvex_transform(),
 			svelte({
-				//preserveWhitespace: true,
-				extensions: [".svelte", ".svexy"],
-				preprocess: mdsvex({
-					remarkPlugins: [[highlighter, { highlight }]],
-					rehypePlugins: [slug, link]
-				}),
+				extensions: [".svelte"],
 				dev,
 				hydratable: true,
 				emitCss: true
@@ -83,13 +98,9 @@ export default {
 				"process.browser": false,
 				"process.env.NODE_ENV": JSON.stringify(mode)
 			}),
+			mdsvex_transform(),
 			svelte({
-				preserveWhitespace: true,
-				extensions: [".svelte", ".svexy"],
-				preprocess: mdsvex({
-					remarkPlugins: [[highlighter, { highlight }]],
-					rehypePlugins: [slug, link]
-				}),
+				extensions: [".svelte"],
 				generate: "ssr",
 				dev
 			}),
