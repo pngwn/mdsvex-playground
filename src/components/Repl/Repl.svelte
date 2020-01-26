@@ -201,7 +201,7 @@
     top: 0;
     left: 0;
     width: 100%;
-    height: 42px;
+    height: 48px;
     box-sizing: border-box;
   }
 
