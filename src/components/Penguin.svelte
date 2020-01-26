@@ -28,7 +28,7 @@
       ? make_duration($pos, from, 10)
       : make_duration($pos, to, 10);
 
-    pos.set(flip ? from : to, { duration: make_duration($pos, from, 10) });
+    pos.set(flip ? from : to, { duration });
   }
 
   $: to = innerWidth > 500 ? 218 : (innerWidth * 0.9) / 2 - 32;
@@ -42,6 +42,7 @@
   $: $pos >= to &&
     (flip = true) &&
     pos.set(from, { duration: make_duration($pos, from, 10) });
+
   $: $pos <= from &&
     !(flip = false) &&
     pos.set(to, { duration: make_duration($pos, to, 10) });

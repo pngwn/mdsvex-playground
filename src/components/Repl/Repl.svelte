@@ -229,7 +229,7 @@
 <div class="container" class:orientation>
   <SplitPane
     type={orientation === 'rows' ? 'vertical' : 'horizontal'}
-    pos={fixed ? fixedPos : orientation === 'rows' ? 50 : 60}
+    pos={fixed ? fixedPos : orientation === 'rows' ? 50 : 50}
     {fixed}>
     <section slot="a" class:funky>
       <ComponentSelector {handle_select} {funky} />
