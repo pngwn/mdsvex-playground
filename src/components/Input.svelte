@@ -1,8 +1,7 @@
 <script>
   import { typewriter } from "./typewriter.js";
-  export let input = [];
 
-  $: console.log(input);
+  export let input = [];
 
   const colors = {
     yellow: "#fdfd96",

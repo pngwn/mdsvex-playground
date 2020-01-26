@@ -1,7 +1,8 @@
 <script>
   import { stores } from "@sapper/app";
+  import { onMount } from "svelte";
+  import docs from "./_docs.svexy";
 
-  let content = "";
   let root;
   let scrollY = 0;
   let current;
@@ -32,8 +33,8 @@
         ["custom components", "docs#custom-components", false]
       ]
     ],
-    ["Frontmatter", "docs#frontmatter-1"]
-    // ["Integrations", "docs#integrations"]
+    ["Frontmatter", "docs#frontmatter-1"],
+    ["Limitations", "docs#limitations"]
   ];
 
   $: root && scrollY && calculate_positions();
@@ -43,11 +44,23 @@
   }
 
   function calculate_positions() {
+    if (window.innerHeight + scrollY >= root.offsetHeight) {
+      for (let i = root.children.length - 1; i >= 0; i--) {
+        const tag = root.children[i].tagName;
+        if (tag === "H2" || tag === "H3") {
+          current = "docs" + remove_origin(root.children[i].children[0].href);
+          break;
+        }
+      }
+
+      return;
+    }
+
     current = "docs" + remove_origin(root.children[0].children[0].href);
+    const last = root.children.length - 1;
 
     for (let node of root.children) {
       const tag = node.tagName;
-      // console.log(node);
 
       if (tag === "H2" || tag === "H3") {
         const { top } = node.getBoundingClientRect();
@@ -58,6 +71,16 @@
       }
     }
   }
+
+  // somebody save me
+
+  onMount(() => {
+    if (window !== undefined && window.location.hash) {
+      document
+        .getElementById(window.location.hash.replace("#", ""))
+        .scrollIntoView();
+    }
+  });
 </script>
 
 <style>
@@ -286,6 +309,6 @@
 
   <article bind:this={root}>
     <slot />
-    {@html content}
+    {@html docs}
   </article>
 </main>

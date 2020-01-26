@@ -35,7 +35,6 @@ export function highlight(code, lang) {
 }
 
 var visit = require("unist-util-visit");
-var escape = require("escape-html");
 
 export function highlighter(options) {
 	return function(ast) {
