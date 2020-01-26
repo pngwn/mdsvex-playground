@@ -25,7 +25,6 @@
 <style>
   .editor-wrapper {
     z-index: 5;
-    background: var(--back-light);
     display: flex;
     flex-direction: column;
   }

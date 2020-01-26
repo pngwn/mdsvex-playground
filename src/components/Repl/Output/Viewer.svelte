@@ -166,7 +166,6 @@
 <style>
   .iframe-container {
     position: absolute;
-    background-color: white;
     border: none;
     width: 100%;
     height: 100%;

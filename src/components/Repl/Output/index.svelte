@@ -72,7 +72,7 @@
   button {
     /* width: 50%;
 		height: 100%; */
-    background: white;
+    /* background: white; */
     text-align: left;
     position: relative;
     font: 400 12px/1.5 var(--font);

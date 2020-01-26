@@ -98,7 +98,6 @@
 <style>
   .component-selector {
     position: relative;
-    border-bottom: 1px solid #eee;
     overflow: hidden;
   }
 
@@ -108,7 +107,7 @@
     white-space: nowrap;
     overflow-x: auto;
     overflow-y: hidden;
-    /* height: 10em; */
+    padding: 10px 15px;
   }
 
   .file-tabs .button,
@@ -116,12 +115,11 @@
     position: relative;
     display: inline-block;
     font: 400 12px/1.5 var(--font);
-    background: white;
+    font-size: 1.5rem;
     border: none;
-    border-bottom: 3px solid transparent;
-    padding: 12px 14px 8px 8px;
+    padding: 12px 34px 8px 8px;
     margin: 0;
-    color: #999;
+    color: #eee;
     border-radius: 0;
   }
 
@@ -130,9 +128,9 @@
   }
 
   .file-tabs .button.active {
-    /* color: var(--second); */
-    color: #333;
-    border-bottom: 3px solid var(--prime);
+    font-size: 1.6rem;
+    font-weight: bold;
+    color: orange;
   }
 
   .editable,
@@ -191,7 +189,6 @@
     padding: 12px 10px 8px 0 !important;
     height: 40px;
     text-align: center;
-    background-color: white;
   }
 
   .add-new:hover {
@@ -206,7 +203,6 @@
     object-fit: contain;
     -webkit-transform-origin: center center;
     transform-origin: center center;
-
     stroke: currentColor;
     stroke-width: 2;
     stroke-linecap: round;
