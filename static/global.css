@@ -511,10 +511,76 @@ input[type="checkbox"]:checked::after {
 }
 
 @font-face {
-	font-family: "Roboto";
-	src: url("/fonts/roboto-thin-webfont.woff2") format("woff2"),
-		url("/fonts/roboto-thin-webfont.woff") format("woff");
+	font-family: "roboto-thin-sub";
+	src: url("/fonts/roboto-thin-webfont.woff2") format("woff2");
 	font-weight: 100;
+	font-style: normal;
+}
+
+@font-face {
+	font-family: "roboto-sub";
+	src: url("/fonts/roboto-thin-webfont.woff2") format("woff2");
+	font-weight: 100;
+	font-style: normal;
+}
+
+@font-face {
+	font-family: "cat-sub";
+	src: url("/fonts/catamaran-light-webfont.woff2") format("woff2");
+	font-weight: 100;
+	font-style: normal;
+}
+
+@font-face {
+	font-family: "fira-sub";
+	src: url("/fonts/firamono-regular-webfont.woff2") format("woff2");
+	font-weight: 100;
+	font-style: normal;
+}
+
+@font-face {
+	font-family: "lato-bold-sub";
+	src: url("/fonts/lato-bold-webfont.woff") format("woff"),
+		url("/fonts/lato-bold-webfont.woff2") format("woff2");
+	font-weight: 100;
+	font-style: normal;
+}
+
+@font-face {
+	font-family: "lato-sub";
+	src: url("/fonts/lato-regular-webfont.woff") format("woff"),
+		url("/fonts/lato-regular-webfont.woff2") format("woff2");
+	font-weight: 100;
+	font-style: normal;
+}
+
+@font-face {
+	font-family: "fira-full";
+	src: url("/fonts/firamono-regular-webfont.woff") format("woff"),
+		url("/fonts/firamono-regular-webfont2.woff2") format("woff2");
+	font-weight: 100;
+	font-style: normal;
+}
+
+@font-face {
+	font-family: "roboto-thin-full";
+	src: url("/fonts/roboto-thin-webfont2.woff") format("woff"),
+		url("/fonts/roboto-thin-webfont2.woff2") format("woff2");
+	font-weight: 100;
+	font-style: normal;
+}
+
+@font-face {
+	font-family: "roboto-full";
+	src: url("/fonts/roboto-light-webfont.woff") format("woff"),
+		url("/fonts/roboto-light-webfont.woff2") format("woff2");
+	font-style: normal;
+}
+
+@font-face {
+	font-family: "roboto-bold-full";
+	src: url("/fonts/roboto-bold-webfont.woff") format("woff"),
+		url("/fonts/roboto-bold-webfont.woff2") format("woff2");
 	font-style: normal;
 }
 

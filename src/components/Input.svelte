@@ -23,7 +23,7 @@
     height: 25rem;
     margin: auto;
     background: #222;
-    font-family: "Fira Mono";
+    font-family: "fira-sub";
     padding: 6rem 1.5rem 1.5rem 1.5rem;
     font-size: 1.8rem;
     line-height: 5rem;

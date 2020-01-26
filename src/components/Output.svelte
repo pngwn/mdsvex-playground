@@ -21,15 +21,14 @@
     font-size: 8rem;
     margin-bottom: 0;
     margin: 0;
-    font-family: "Roboto";
+    font-family: "roboto-sub";
     color: #333;
   }
 
   p {
     margin: 1rem 0;
     font-size: 2.5rem;
-    font-weight: 300;
-    font-family: "Catamaran";
+    font-family: "cat-sub";
   }
 </style>
 

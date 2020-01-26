@@ -41,30 +41,16 @@ export function highlighter(options) {
 		visit(ast, "code", function(node) {
 			const html = node.value;
 			node.type = "html";
-			node.value = `<pre class="language-${node.lang}">
-  <code class="language-${node.lang || ""}">
-${
-	node.lang
-		? options
-				.highlight(html, node.lang)
-				.replace(/[{}]/g, c => ({ "{": "&#123;", "}": "&#125;" }[c]))
-				// I'll fix this properly at some point, issue with svelte
-				.replace(
-					/script\<\/span\>\<span class\=\"token punctuation\">(?:(?:\>)|(?:&gt;))<\/span><\/span\>/,
-					'script</span><span class="token punctuation">></span></span>\n  '
-				)
-				.replace(
-					/(style\<\/span\>\<span class\=\"token punctuation\">\><\/span><\/span\>)|(style\<\/span\>\<span class\=\"token punctuation\">&lt;<\/span><\/span\>)/,
-					`script</span><span class="token punctuation">></span></span>\n  `
-				)
-				.replace(
-					/script<\/span> <span class="token attr-name">context<\/span><span class="token attr-value"><span class="token punctuation">=<\/span><span class="token punctuation">"<\/span>module<span class="token punctuation">"<\/span><\/span><span class="token punctuation">((?:&gt;)|(?:>))<\/span><\/span>/,
-					'script</span> <span class="token attr-name">context</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>module<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span>\n  '
-				)
-		: node.value
-}
-  </code>
-</pre>`;
+			node.value = `<pre class="language-${
+				node.lang
+			}"><code class="language-${node.lang || ""}">${
+				node.lang
+					? options
+							.highlight(html, node.lang)
+							.replace(/[{}]/g, c => ({ "{": "&#123;", "}": "&#125;" }[c]))
+					: node.value
+			}</code></pre>`;
+			console.log(node.value);
 		});
 	};
 }

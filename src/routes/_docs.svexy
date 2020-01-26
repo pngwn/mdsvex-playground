@@ -10,7 +10,7 @@ You can do this:
 
 ```mdsvex
 <script>
- import { Chart } from "../components/Chart.svelte";
+	import { Chart } from "../components/Chart.svelte";
 </script>
 
 # Here’s a chart
@@ -104,10 +104,10 @@ export default {
 
 ```ts
 smartypants: boolean | {
- quotes: boolean = true;
- ellipses: boolean = true;
- backticks: boolean | 'all' = true;
- dashes: boolean | 'oldschool' | 'inverted' = true;
+	quotes: boolean = true;
+	ellipses: boolean = true;
+	backticks: boolean | 'all' = true;
+	dashes: boolean | 'oldschool' | 'inverted' = true;
 } = true;
 ```
 

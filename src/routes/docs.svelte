@@ -105,13 +105,15 @@
     margin: 30px 0px;
     position: relative;
     text-transform: uppercase;
-    font-weight: 600;
+    font-weight: bold;
+    font-family: "lato-bold-sub";
   }
 
   ul > li > ul > li {
     margin: 10px 0px;
     text-transform: none;
     font-weight: 400;
+    font-family: "lato-sub";
   }
 
   a {
@@ -129,8 +131,9 @@
     color: #777;
     -webkit-font-smoothing: initial;
     background: #eee;
-    padding: 3px 6px;
+    padding: 3px 6px 0 6px !important;
     transition: 0.3s;
+    font-family: "fira-full";
   }
 
   a:hover,
@@ -161,7 +164,7 @@
 
   article :global(h1) {
     margin-bottom: 46px;
-    font-family: Roboto;
+    font-family: "roboto-sub";
     font-weight: 100;
     font-size: 6rem;
   }
@@ -169,20 +172,22 @@
   article :global(h3) {
     margin-bottom: 2rem;
     margin-top: 3rem;
+    font-family: "roboto-bold-full";
   }
 
   article :global(h4) {
     margin-top: 2rem;
     margin-bottom: 2rem;
+    font-family: "roboto-bold-full";
   }
 
   article :global(p) {
-    font-family: "Roboto";
+    font-family: "roboto-full";
   }
 
   article :global(code),
   a code {
-    font-family: "Fira Mono";
+    font-family: "fira-full";
     position: relative;
     border-radius: 0.3rem;
     color: #333;
@@ -247,7 +252,7 @@
 
   article :global(pre.language-sig) {
     display: inline-block;
-    padding: 2px 7px 1px;
+    padding: 2px 7px 2px;
     margin: 20px 0 0 0;
   }
 
@@ -269,6 +274,20 @@
     height: 100%;
     width: 0;
     padding-top: 30px;
+  }
+
+  @media (max-width: 930px) {
+    main {
+    }
+    article {
+      width: 100%;
+      max-width: 100%;
+      margin-left: 0;
+    }
+
+    nav {
+      transform: translateX(-300px);
+    }
   }
 </style>
 
