@@ -10,5 +10,6 @@ import "codemirror/mode/xml/xml.js";
 import "codemirror/mode/css/css.js";
 import "codemirror/addon/edit/closebrackets.js";
 import "codemirror/addon/edit/closetag.js";
+import "codemirror/mode/gfm/gfm.js";
 
 export default CodeMirror;

@@ -191,7 +191,7 @@
 
   .container :global(section) {
     position: relative;
-    padding: 42px 0 0 0;
+    padding: 63px 0 0 0;
     height: 100%;
     box-sizing: border-box;
   }
@@ -201,8 +201,9 @@
     top: 0;
     left: 0;
     width: 100%;
-    height: 48px;
+    height: 63px;
     box-sizing: border-box;
+    border-bottom: 1px solid #eee;
   }
 
   .container :global(section) > :global(*):last-child {

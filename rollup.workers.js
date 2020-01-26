@@ -11,5 +11,5 @@ export default ["compiler", "bundler"].map(x => ({
 		file: `static/workers/${x}.js`,
 		format: "iife"
 	},
-	plugins: [resolve(), json()]
+	plugins: [resolve(), json(), terser()]
 }));
