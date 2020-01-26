@@ -43,6 +43,8 @@
 		"sapper": "^0.27.8",
 		"svelte": "^3.7.1",
 		"svelte-json-tree": "^0.0.7",
+		"typeface-catamaran": "^0.0.72",
+		"typeface-roboto": "^0.0.75",
 		"unist-util-visit": "^2.0.1"
 	}
 }

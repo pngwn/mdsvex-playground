@@ -46,6 +46,17 @@
   a:hover :global(svg) {
     opacity: 1;
   }
+
+  @media (max-width: 930px) {
+    nav {
+      left: 0;
+      width: 100%;
+    }
+
+    ul {
+      justify-content: center;
+    }
+  }
 </style>
 
 <nav>

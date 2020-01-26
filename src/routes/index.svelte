@@ -55,6 +55,14 @@
   });
 </script>
 
+<svelte:head>
+  <link
+    rel="preload"
+    as="font"
+    crossorigin
+    href="/fonts/roboto-thin-webfont.woff2" />
+</svelte:head>
+
 <main>
   <Output {heading} {paragraph} {penguin} {walk} />
   <Input {input} />
