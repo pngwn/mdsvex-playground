@@ -13,7 +13,6 @@
     list-style: none;
     display: flex;
     justify-content: flex-end;
-    flex-direction: row-reverse;
     padding: 10px;
     margin: 10px;
   }
@@ -51,6 +50,9 @@
 
 <nav>
   <ul>
+    <li>
+      <a href="/">mdsvex</a>
+    </li>
     <li>
       <a href="docs">docs</a>
     </li>
