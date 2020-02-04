@@ -21,6 +21,7 @@
         ["layout", "docs#layout", true],
         ["remarkPlugins", "docs#remarkplugins--rehypeplugins", true],
         ["rehypePlugins", "docs#remarkplugins--rehypeplugins", true],
+        ["highlight", "docs#highlight", true],
         ["frontmatter", "docs#frontmatter", true]
       ]
     ],
