@@ -40,7 +40,8 @@
   $: root && scrollY && calculate_positions();
 
   function remove_origin(href) {
-    return href.replace(`http://${$page.host}/`, "");
+    const re = new RegExp(`http(s*)://${$page.host}/`);
+    return href.replace(re, "");
   }
 
   function calculate_positions() {
