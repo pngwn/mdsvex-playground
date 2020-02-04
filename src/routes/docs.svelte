@@ -19,8 +19,8 @@
         ["extension", "docs#extension", true],
         ["smartypants", "docs#smartypants", true],
         ["layout", "docs#layout", true],
-        ["remarkPlugins", "docs#remarkplugins", true],
-        ["rehypePlugins", "docs#rehypeplugins", true],
+        ["remarkPlugins", "docs#remarkplugins--rehypeplugins", true],
+        ["rehypePlugins", "docs#remarkplugins--rehypeplugins", true],
         ["frontmatter", "docs#frontmatter", true]
       ]
     ],
@@ -77,6 +77,7 @@
 
   onMount(() => {
     if (window !== undefined && window.location.hash) {
+      console.log(window.location.hash.replace("#", ""));
       document
         .getElementById(window.location.hash.replace("#", ""))
         .scrollIntoView();
@@ -121,7 +122,6 @@
     text-decoration: none;
     border: none;
     color: #777;
-    font-family: "Lato";
     margin-left: 25px;
   }
 
@@ -170,6 +170,12 @@
     font-size: 6rem;
   }
 
+  article :global(h2) {
+    margin: 5rem 0 3rem 0;
+    border-bottom: 1px solid #ccc;
+    font-family: "roboto-bold-full";
+  }
+
   article :global(h3) {
     margin-bottom: 2rem;
     margin-top: 3rem;
@@ -186,15 +192,14 @@
     font-family: "roboto-full";
   }
 
-  article :global(code),
-  a code {
+  article :global(code) {
     font-family: "fira-full";
     position: relative;
     border-radius: 0.3rem;
     color: #333;
     -webkit-font-smoothing: initial;
     background: #eee;
-    padding: 3px 6px;
+    padding: 1px 4px 0;
     white-space: pre;
     word-spacing: normal;
     word-break: normal;
@@ -225,11 +230,6 @@
     word-break: normal;
     word-wrap: normal;
     line-height: 2.5rem;
-  }
-
-  article :global(h2) {
-    margin: 5rem 0 3rem 0;
-    border-bottom: 1px solid #ccc;
   }
 
   article :global(blockquote) {
