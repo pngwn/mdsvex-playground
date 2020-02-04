@@ -3,9 +3,9 @@
 	"description": "Documentation side for mdsvex",
 	"version": "0.0.1",
 	"scripts": {
-		"dev": "sapper dev --ext '.svelte .svexy'",
-		"build": "sapper build --legacy --ext '.svelte .svexy'",
-		"export": "sapper export --legacy --ext '.svelte .svexy'",
+		"dev": "sapper dev --ext '.svelte .svx'",
+		"build": "sapper build --legacy --ext '.svelte .svx'",
+		"export": "sapper export --legacy --ext '.svelte .svx'",
 		"start": "node __sapper__/build",
 		"cy:run": "cypress run",
 		"cy:open": "cypress open",

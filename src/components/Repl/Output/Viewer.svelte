@@ -178,6 +178,11 @@
     height: calc(100vh);
     border: none;
     display: block;
+    opacity: 0;
+  }
+
+  .inited {
+    opacity: 1;
   }
 
   .greyed-out {
@@ -204,7 +209,6 @@
 </style>
 
 <div class="iframe-container">
-  <!-- <PaneWithPanel pos={100} panel="Console"> -->
   <div>
     <iframe
       title="Result"
@@ -216,18 +220,6 @@
       {srcdoc} />
   </div>
 
-  <!-- <div slot="panel-header">
-      <button on:click|stopPropagation={clear_logs}>
-        {#if logs.length > 0}({logs.length}){/if}
-        Clear
-      </button>
-    </div>
-
-    <section slot="panel-body">
-      <Console {logs} on:clear={clear_logs} />
-    </section> -->
-
-  <!-- </PaneWithPanel> -->
   {#if !funky}
     <div class="overlay">
       {#if error}

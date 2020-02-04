@@ -25,7 +25,7 @@
     border: none;
     font-weight: 300;
     color: #333;
-    font-family: "Roboto";
+    font-family: "roboto-full";
     display: flex;
     align-items: center;
   }

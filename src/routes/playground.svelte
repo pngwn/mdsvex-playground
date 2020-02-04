@@ -9,7 +9,7 @@
     repl.set({
       components: [
         {
-          type: "svexy",
+          type: "svx",
           name: "App",
           source: code_1
         },
@@ -19,7 +19,7 @@
           source: code_2
         },
         {
-          type: "svexy",
+          type: "svx",
           name: "Section",
           source: code_3
         },

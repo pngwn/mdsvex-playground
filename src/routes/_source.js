@@ -8,7 +8,7 @@ list: [1, 2, 3, 4, "boo"]
 
 <script>
 	import Boinger from './Boinger.svelte';
-	import Section from './Section.svexy';
+	import Section from './Section.svx';
 	import Count from './Count.svelte';
   import Seriously from './Seriously.svelte';
 
@@ -38,7 +38,7 @@ I'm not gonna stand in the way of your egomania.
 >
 >— *Me, May 2019*
 
-Yeah, thats right you can put wigdets in markdown (\`.svexy\` files or otherwise). You can put markdown in widgets too.
+Yeah, thats right you can put wigdets in markdown (\`.svx\` files or otherwise). You can put markdown in widgets too.
 
 <Seriously>
 

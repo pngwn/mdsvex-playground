@@ -23,10 +23,11 @@ import { mdsvex } from "mdsvex";
 function mdsvex_transform() {
 	return {
 		async transform(code, id) {
-			if (extname(id) !== ".svexy") return;
+			if (extname(id) !== ".svx") return;
 
 			const c = (
 				await mdsvex({
+					extension: '.svx',
 					remarkPlugins: [[highlighter, { highlight }]],
 					rehypePlugins: [slug, link]
 				}).markup({ content: code, filename: id })

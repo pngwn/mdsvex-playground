@@ -9,7 +9,6 @@ self.addEventListener("message", async event => {
 	switch (event.data.type) {
 		case "init":
 			importScripts(`${event.data.svelteUrl}/compiler.js`);
-			console.log(self);
 			fulfil_ready();
 			break;
 
