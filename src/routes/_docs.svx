@@ -297,9 +297,7 @@ If you wish to handle syntax-highlighting yourself, you can provide a custom hig
 
 You can disable syntax highlighting by passing a function that does nothing:
 
-<!-- ```js
-highlight: code => `<pre><code>${code}</code></pre>`
-``` -->
+
 
 ### `frontmatter`
 
