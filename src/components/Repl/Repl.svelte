@@ -217,13 +217,6 @@
     overflow: hidden;
     border: 1px solid #ddd;
   }
-
-  /* .funky {
-    border-radius: none;
-    box-shadow: none;
-    overflow: hidden;
-    border: none;
-  } */
 </style>
 
 <div class="container" class:orientation>

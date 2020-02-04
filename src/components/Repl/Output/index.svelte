@@ -21,8 +21,6 @@
   export let injectedCSS;
   export let funky = false;
 
-  $: console.log(injectedCSS);
-
   let foo; // TODO workaround for https://github.com/sveltejs/svelte/issues/2122
 
   register_output({
@@ -63,57 +61,6 @@
 </script>
 
 <style>
-  .view-toggle {
-    height: var(--pane-controls-h);
-    border-bottom: 1px solid #eee;
-    white-space: nowrap;
-    box-sizing: border-box;
-    padding-left: 15px;
-  }
-
-  button {
-    /* width: 50%;
-		height: 100%; */
-    /* background: white; */
-    text-align: left;
-    position: relative;
-    font: 400 12px/1.5 var(--font);
-    border: none;
-    border-bottom: 3px solid transparent;
-    padding: 12px 12px 8px 12px;
-    color: #999;
-    border-radius: 0;
-  }
-
-  button.active {
-    border-bottom: 3px solid var(--prime);
-    color: #333;
-  }
-
-  button.funky {
-    /* width: 50%;
-		height: 100%; */
-    background: white;
-    text-align: left;
-    position: relative;
-    font: 400 12px/1.5 var(--font);
-    border: none;
-    border-bottom: 3px solid transparent;
-    padding: 12px 12px 8px 12px;
-    color: #999;
-    border-radius: 0;
-    /* font-size: 0;
-    width: 15px;
-    height: 15px;
-    background: #ccc;
-    border-radius: 50%;
-    margin-right: 5px; */
-  }
-
-  div[slot] {
-    height: 100%;
-  }
-
   .tab-content {
     position: absolute;
     width: 100%;
@@ -129,22 +76,6 @@
   }
 </style>
 
-<!--
-<div class="view-toggle">
-  <button class:active={view === 'result'} on:click={() => (view = 'result')}>
-    Result
-  </button>
-
-  <button class:active={view === 'js'} on:click={() => (view = 'js')}>
-    JS output
-  </button>
-
-  <button class:active={view === 'css'} on:click={() => (view = 'css')}>
-    CSS output
-  </button>
-</div> -->
-
-<!-- component viewer -->
 <div class="tab-content" class:visible={view === 'result'}>
   <Viewer
     {funky}
@@ -155,37 +86,3 @@
     {injectedJS}
     {injectedCSS} />
 </div>
-
-<!-- js output -->
-<!-- <div class="tab-content" class:visible={view === 'js'}>
-  {#if embedded}
-    <CodeMirror
-      bind:this={js_editor}
-      mode="js"
-      errorLoc={sourceErrorLoc}
-      readonly />
-  {:else}
-    <PaneWithPanel pos={67} panel="Compiler options">
-      <div slot="main">
-        <CodeMirror
-          bind:this={js_editor}
-          mode="js"
-          errorLoc={sourceErrorLoc}
-          readonly />
-      </div>
-
-      <div slot="panel-body">
-        <CompilerOptions />
-      </div>
-    </PaneWithPanel>
-  {/if}
-</div> -->
-
-<!-- css output -->
-<!-- <div class="tab-content" class:visible={view === 'css'}>
-  <CodeMirror
-    bind:this={css_editor}
-    mode="css"
-    errorLoc={sourceErrorLoc}
-    readonly />
-</div> -->

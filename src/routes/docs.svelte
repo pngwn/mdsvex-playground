@@ -1,7 +1,7 @@
 <script>
   import { stores } from "@sapper/app";
   import { onMount } from "svelte";
-  import docs from "./_docs.svexy";
+  import docs from "./_docs.svx";
 
   let root;
   let scrollY = 0;

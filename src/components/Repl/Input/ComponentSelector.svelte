@@ -22,7 +22,7 @@
   }
 
   function closeEdit() {
-    const match = /(.+)\.(svelte|svexy|js)$/.exec($selected.name);
+    const match = /(.+)\.(svelte|svx|js)$/.exec($selected.name);
     $selected.name = match ? match[1] : $selected.name;
     if (isComponentNameUsed($selected)) {
       $selected.name = $selected.name + "_1";

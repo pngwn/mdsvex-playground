@@ -185,7 +185,7 @@ async function get_bundle(uid, mode, cache, lookup) {
 
 			self.postMessage({ type: "status", uid, message: `bundling ${id}` });
 
-			if (!/\.svelte$|\.svexy$/.test(id)) return null;
+			if (!/\.svelte$|\.svx$/.test(id)) return null;
 
 			const name = id
 				.split("/")
@@ -195,7 +195,7 @@ async function get_bundle(uid, mode, cache, lookup) {
 			let preprocessPromise;
 			if (cache[id] && cache[id].code === code) {
 				return cache[id].result;
-			} else if (/\.svexy$/.test(id)) {
+			} else if (/\.svx$/.test(id)) {
 				preprocessPromise = self.mdsvex
 					.mdsvex()
 					.markup({ content: code, filename: id });
@@ -207,7 +207,6 @@ async function get_bundle(uid, mode, cache, lookup) {
 			// 	? cache[id].result
 			// 	:
 			return preprocessPromise.then(({ code: v }) => {
-				console.log("IN PROMISE:", v);
 				const result = svelte.compile(
 					v,
 					Object.assign(
@@ -243,7 +242,7 @@ async function get_bundle(uid, mode, cache, lookup) {
 
 	try {
 		bundle = await rollup.rollup({
-			input: "./App.svexy",
+			input: "./App.svx",
 			plugins: [repl_plugin, commonjs, json, glsl],
 			inlineDynamicImports: true,
 			onwarn(warning) {

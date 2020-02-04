@@ -50,7 +50,6 @@ export function highlighter(options) {
 							.replace(/[{}]/g, c => ({ "{": "&#123;", "}": "&#125;" }[c]))
 					: node.value
 			}</code></pre>`;
-			console.log(node.value);
 		});
 	};
 }

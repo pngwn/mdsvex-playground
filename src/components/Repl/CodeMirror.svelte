@@ -76,7 +76,7 @@
       name: "handlebars",
       base: "text/html"
     },
-    svexy: {
+    svx: {
       name: "gfm"
     }
   };
