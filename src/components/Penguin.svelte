@@ -55,6 +55,12 @@
     height: 70px;
     margin: 88px auto 0 auto;
   }
+
+  @media (max-width: 930px) {
+    .one {
+      margin-top: 63px;
+    }
+  }
 </style>
 
 <svelte:window bind:innerWidth />
