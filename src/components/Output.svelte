@@ -30,6 +30,16 @@
     font-size: 2.5rem;
     font-family: "cat-sub";
   }
+
+  @media (max-width: 930px) {
+    .container {
+      height: 25rem;
+    }
+
+    h1 {
+      font-size: 6rem;
+    }
+  }
 </style>
 
 <div class="container">

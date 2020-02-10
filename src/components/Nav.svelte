@@ -1,5 +1,24 @@
 <script>
+  import { stores } from "@sapper/app";
   import GithubIcon from "./GithubIcon.svelte";
+
+  const { page } = stores();
+
+  let w;
+  const links = [
+    ["/", "mdsvex"],
+    ["/docs", "docs"],
+    ["/playground", "try"],
+    ["https://www.github.com/pngwn/mdsvex", "github"]
+  ];
+
+  // $: filtered_links = is_small
+  //   ? links.filter(([href]) => href === $page.path)
+  //   : links;
+
+  // $: is_small = process.browser && w && w < 930;
+
+  // $: console.log(is_small, w);
 </script>
 
 <style>
@@ -12,7 +31,7 @@
   ul {
     list-style: none;
     display: flex;
-    justify-content: flex-end;
+    justify-content: center;
     padding: 10px;
     margin: 10px;
   }
@@ -49,33 +68,34 @@
 
   @media (max-width: 930px) {
     nav {
-      left: 0;
+      left: 0px;
       width: 100%;
-    }
-
-    ul {
-      justify-content: center;
     }
   }
 </style>
 
+<svelte:window bind:innerWidth={w} />
+
 <nav>
   <ul>
-    <li>
-      <a href="/">mdsvex</a>
-    </li>
-    <li>
-      <a href="docs">docs</a>
-    </li>
-    <li>
-      <a href="playground">try</a>
-    </li>
-    <li>
-      <a
-        title="link to github repository"
-        href="https://www.github.com/pngwn/mdsvex">
-        <GithubIcon />
-      </a>
-    </li>
+    {#each links as [href, title]}
+      <!-- {#if title === 'github'}
+        <li>
+          <a
+            title="link to github repository"
+            href="https://www.github.com/pngwn/mdsvex">
+            <GithubIcon />
+          </a>
+        </li>
+      {:else} -->
+      <li>
+        <a {href}>{title}</a>
+      </li>
+      <!-- {/if} -->
+    {/each}
   </ul>
 </nav>
+
+<!-- <li>
+
+    </li> -->

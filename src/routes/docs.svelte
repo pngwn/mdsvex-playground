@@ -285,6 +285,11 @@
       width: 100%;
       max-width: 100%;
       margin-left: 0;
+      margin-top: 20px;
+    }
+
+    article :global(h1) {
+      text-align: center;
     }
 
     nav {
