@@ -9,7 +9,7 @@
   let root;
   let scrollY = 0;
   let current;
-  let position;
+  let position = "";
 
   const { page } = stores();
 
@@ -82,6 +82,8 @@
       const el = document.getElementById(window.location.hash.replace("#", ""));
       el && el.scrollIntoView();
     }
+
+    calculate_positions();
   });
 </script>
 
