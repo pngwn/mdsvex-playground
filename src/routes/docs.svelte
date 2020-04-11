@@ -309,41 +309,45 @@
 <main>
   <Cheatsheet />
   <div style="position: relative;">
-    <nav style="position: {position};">
-      <ul>
-        {#each nav as [title, href, children]}
-          <li class={children ? 'solo' : 'solo'}>
-            <a
-              class:active={current === href}
-              {href}
-              on:click={() => (current = href)}>
-              {title}
-            </a>
-            {#if children}
-              <ul>
-                {#each children as [child_title, child_link, is_code]}
-                  <li>
-                    {#if is_code}
-                      <a
-                        class:active={current === child_link}
-                        href={child_link}>
-                        <code>{child_title}</code>
-                      </a>
-                    {:else}
-                      <a
-                        class:active={current === child_link}
-                        href={child_link}>
-                        {child_title}
-                      </a>
-                    {/if}
-                  </li>
-                {/each}
-              </ul>
-            {/if}
-          </li>
-        {/each}
-      </ul>
-    </nav>
+
+    {#if position}
+      <nav style="position: {position};">
+        <ul>
+          {#each nav as [title, href, children]}
+            <li class={children ? 'solo' : 'solo'}>
+              <a
+                class:active={current === href}
+                {href}
+                on:click={() => (current = href)}>
+                {title}
+              </a>
+              {#if children}
+                <ul>
+                  {#each children as [child_title, child_link, is_code]}
+                    <li>
+                      {#if is_code}
+                        <a
+                          class:active={current === child_link}
+                          href={child_link}>
+                          <code>{child_title}</code>
+                        </a>
+                      {:else}
+                        <a
+                          class:active={current === child_link}
+                          href={child_link}>
+                          {child_title}
+                        </a>
+                      {/if}
+                    </li>
+                  {/each}
+                </ul>
+              {/if}
+            </li>
+          {/each}
+        </ul>
+      </nav>
+    {/if}
+
     <div class="container">
       <article bind:this={root}>
         <slot />
