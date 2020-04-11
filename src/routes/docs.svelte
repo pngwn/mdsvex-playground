@@ -1,11 +1,15 @@
 <script>
   import { stores } from "@sapper/app";
   import { onMount } from "svelte";
-  import docs from "./_docs.svx";
+  import docs from "./_docs.svtext";
+  import Cheatsheet from "../components/Cheatsheet.svx";
+  // console.log(docs);
+  // console.log(Cheatsheet);
 
   let root;
   let scrollY = 0;
   let current;
+  let position;
 
   const { page } = stores();
 
@@ -46,31 +50,28 @@
   }
 
   function calculate_positions() {
-    if (window.innerHeight + scrollY >= root.offsetHeight) {
-      for (let i = root.children.length - 1; i >= 0; i--) {
-        const tag = root.children[i].tagName;
-        if (tag === "H2" || tag === "H3") {
-          current = "docs" + remove_origin(root.children[i].children[0].href);
-          break;
-        }
-      }
+    if (scrollY < document.documentElement.clientHeight) {
+      position = "absolute";
+    } else {
+      position = "fixed";
+    }
 
+    const nodes = Array.from(root.children).filter(
+      v => v.tagName === "H2" || v.tagName === "H3"
+    );
+    const last = nodes.length - 1;
+
+    if (root.getBoundingClientRect().bottom === window.innerHeight) {
+      current = "docs" + remove_origin(nodes[last].children[0].href);
       return;
     }
 
-    current = "docs" + remove_origin(root.children[0].children[0].href);
-    const last = root.children.length - 1;
-
-    for (let node of root.children) {
-      const tag = node.tagName;
-
-      if (tag === "H2" || tag === "H3") {
-        const { top } = node.getBoundingClientRect();
-        if (top > 5) {
-          break;
-        }
-        current = "docs" + remove_origin(node.children[0].href);
+    for (let node of nodes) {
+      const { top } = node.getBoundingClientRect();
+      if (top > 5) {
+        break;
       }
+      current = "docs" + remove_origin(node.children[0].href);
     }
   }
 
@@ -78,26 +79,20 @@
 
   onMount(() => {
     if (window !== undefined && window.location.hash) {
-      console.log(window.location.hash.replace("#", ""));
-      document
-        .getElementById(window.location.hash.replace("#", ""))
-        .scrollIntoView();
+      const el = document.getElementById(window.location.hash.replace("#", ""));
+      el && el.scrollIntoView();
     }
   });
 </script>
 
 <style>
-  main {
-    display: flex;
-  }
-
   nav {
     padding: 20px 30px;
     width: 300px;
-    position: fixed;
-    height: calc(100% - 140px);
+    top: 0;
+    height: calc(100% - 70px);
     overflow-y: scroll;
-    margin-top: 140px;
+    margin-top: 70px;
   }
 
   ul {
@@ -158,10 +153,7 @@
   }
 
   article {
-    margin-top: 50px;
-    padding: 20px;
-    max-width: 70rem;
-    margin-left: 300px;
+    /* margin: 50px auto 0px auto; */
   }
 
   article :global(h1) {
@@ -279,8 +271,6 @@
   }
 
   @media (max-width: 930px) {
-    main {
-    }
     article {
       width: 100%;
       max-width: 100%;
@@ -296,45 +286,67 @@
       transform: translateX(-300px);
     }
   }
+
+  .container {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    grid-template-rows: 1fr;
+    grid-gap: 30px;
+    margin-top: 60px;
+  }
+
+  article {
+    grid-column: 5 / span 8;
+    max-width: 100%;
+    min-width: 0;
+  }
 </style>
 
 <svelte:window bind:scrollY />
 
 <main>
-  <nav>
-    <ul>
-      {#each nav as [title, href, children]}
-        <li class={children ? 'solo' : 'solo'}>
-          <a
-            class:active={current === href}
-            {href}
-            on:click={() => (current = href)}>
-            {title}
-          </a>
-          {#if children}
-            <ul>
-              {#each children as [child_title, child_link, is_code]}
-                <li>
-                  {#if is_code}
-                    <a class:active={current === child_link} href={child_link}>
-                      <code>{child_title}</code>
-                    </a>
-                  {:else}
-                    <a class:active={current === child_link} href={child_link}>
-                      {child_title}
-                    </a>
-                  {/if}
-                </li>
-              {/each}
-            </ul>
-          {/if}
-        </li>
-      {/each}
-    </ul>
-  </nav>
-
-  <article bind:this={root}>
-    <slot />
-    {@html docs}
-  </article>
+  <Cheatsheet />
+  <div style="position: relative;">
+    <nav style="position: {position};">
+      <ul>
+        {#each nav as [title, href, children]}
+          <li class={children ? 'solo' : 'solo'}>
+            <a
+              class:active={current === href}
+              {href}
+              on:click={() => (current = href)}>
+              {title}
+            </a>
+            {#if children}
+              <ul>
+                {#each children as [child_title, child_link, is_code]}
+                  <li>
+                    {#if is_code}
+                      <a
+                        class:active={current === child_link}
+                        href={child_link}>
+                        <code>{child_title}</code>
+                      </a>
+                    {:else}
+                      <a
+                        class:active={current === child_link}
+                        href={child_link}>
+                        {child_title}
+                      </a>
+                    {/if}
+                  </li>
+                {/each}
+              </ul>
+            {/if}
+          </li>
+        {/each}
+      </ul>
+    </nav>
+    <div class="container">
+      <article bind:this={root}>
+        <slot />
+        {@html docs}
+      </article>
+    </div>
+  </div>
 </main>

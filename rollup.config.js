@@ -1,3 +1,9 @@
+import 'prismjs';
+import "prism-svelte";
+import "./prism/svx.js";
+
+
+
 import resolve from "rollup-plugin-node-resolve";
 import replace from "rollup-plugin-replace";
 import commonjs from "rollup-plugin-commonjs";
@@ -23,17 +29,25 @@ import { mdsvex } from "mdsvex";
 function mdsvex_transform() {
 	return {
 		async transform(code, id) {
-			if (extname(id) !== ".svx") return;
+			if (extname(id) !== ".svtext") return;
 
 			const c = (
 				await mdsvex({
-					extension: '.svx',
-					remarkPlugins: [[highlighter, { highlight }]],
+					highlight: {
+						alias: {
+							ts: "typescript",
+							mdx: "markdown",
+							svelte: "svelte",
+							svx: "svx",
+							mdsvex: "svx",
+							sig: "ts",
+						}
+					},
+					extension: '.svtext',
 					rehypePlugins: [slug, link]
 				}).markup({ content: code, filename: id })
-			).code.replace("`", "\\");
-
-			return `export default \`${c}\`;`;
+			).code;
+			return `export default \`${c.replace(/`/g, "\\`").trim()}\`;`;
 		}
 	};
 }
@@ -52,10 +66,11 @@ export default {
 			}),
 			mdsvex_transform(),
 			svelte({
-				extensions: [".svelte"],
+				extensions: [".svelte", ".svx"],
 				dev,
 				hydratable: true,
-				emitCss: true
+				emitCss: true,
+				preprocess: mdsvex({ extension: '.svx' })
 			}),
 			resolve({ preferBuiltins: false, browser: true }),
 			commonjs(),
@@ -101,9 +116,10 @@ export default {
 			}),
 			mdsvex_transform(),
 			svelte({
-				extensions: [".svelte"],
+				extensions: [".svelte", ".svx"],
 				generate: "ssr",
-				dev
+				dev,
+				preprocess: mdsvex({ extension: '.svx' })
 			}),
 			resolve({ browser: true }),
 			commonjs()

@@ -1,0 +1,353 @@
+<style>
+  :global(body) {
+    background: #f8f8f8;
+    padding: 60px;
+    /* height: 100vh; */
+    box-sizing: border-box;
+  }
+
+  dl {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 90%;
+    margin: 0;
+  }
+
+  dd {
+    margin: -7% 0 15px 0;
+    font-style: italic;
+  }
+
+  li {
+  }
+
+  dt span {
+    font-family: monospace;
+    font-size: 16px;
+    padding: 3px 6px;
+    background: #eee;
+    display: inline-block;
+    margin: 10px 0 0 0;
+    border-radius: 3px;
+  }
+
+  dt::after {
+    content: 'linky'
+  }
+
+  li:first-child > span {
+    margin-top: 14px;
+  }
+
+  li:last-child > span {
+    margin-bottom: 20px;
+  }
+  h2 {
+    color: #555;
+  }
+
+  .container {
+    width: 100%;
+    height: calc(100vh - 120px);
+
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    grid-template-rows: repeat(12, 1fr);
+    grid-gap: 30px;
+  }
+
+  .box {
+    background: #fff;
+    padding: 0 20px;
+    min-width: 0;
+    min-height: 0;
+    box-shadow:  0 1px 5px rgba(0, 0, 0, 0.15);
+
+  }
+
+  .install {
+    grid-column: 1 / span 4;
+    grid-row: 1 / span 4;
+  }
+
+  .use {
+    grid-column: 5 / span 4;
+    grid-row: 1 / span 5;
+  }
+
+  .config {
+    grid-column: 9 / span 4;
+    grid-row: 1 / span 12;
+    display: grid;
+    grid-template-rows: repeat(12, 1fr);
+  }
+
+  .config > div {
+    grid-row: 1 / span 1;
+  }
+
+  .config > dl {
+    grid-row: 2 / span 11;
+    height: 77vh;
+  }
+
+  .layouts {
+    grid-column: 1 / span 4;
+    grid-row: 5 / span 8;
+  }
+
+  .frontmatter {
+    grid-column: 5 / span 4;
+    grid-row: 6 / span 4;
+  }
+
+  .integrations {
+    grid-column: 5 / span 4;
+    grid-row: 10 / span 3;
+  }
+
+  pre,
+  h2 {
+    margin-top: 2rem;
+  }
+
+  pre {
+    border-radius: 3px;
+    padding: 0.8rem 1rem 0.8rem 1rem
+  }
+
+  code {
+    display: block;
+    line-height: 1.5;
+    padding: 3px 10px 5px 10px;
+    border-radius: 3px;
+    font-size: 14px;
+    overflow: scroll;
+
+  }
+
+  .box {
+    position: relative;
+    display: inline-block;
+  }
+
+
+  h2 {
+    font-weight: normal;
+    text-transform: lowercase;
+    font-family: "fira-full";
+    font-size: 2rem;
+    margin-bottom: 2rem;
+  }
+
+  h2 a, h3 a {
+    border: none;
+  }
+
+  h2 a::before, h3 a::before {
+    content: '#';
+    color: #bbb;
+    font-size: 2rem;
+  }
+
+   h3 a::before {
+    font-size: 1.7rem;
+  }
+
+  h3 {
+    font-size: 1.7rem;
+    margin-bottom: 0;
+    margin-top: 2rem;
+    font-family: 'fira-full';
+  }
+
+  h3 + pre {
+    margin-top: 0.5rem;
+  }
+
+  .box > p {
+    display: none;
+    margin-top: 10px;
+  }
+
+  .box > .keep {
+    display: block;
+  }
+
+  @media (max-height: 900px) {
+    dd {
+      margin-top: 0;
+    }
+  }
+
+  @media (max-height: 800px) {
+    .config > dl {
+      height: 65vh;
+    }
+    dd {
+      height: 0;
+      overflow: hidden;
+      margin: 0;
+    }
+
+    .box > pre {
+      display: none;
+    }
+
+    .box > p {
+      display: block;
+    }
+
+    .install {
+      grid-column: 1 / span 4;
+      grid-row: 1 / span 3;
+    }
+
+    .layouts {
+      grid-column: 1 / span 4;
+      grid-row: 4 / span 9;
+    }
+
+    .use {
+      grid-column: 5 / span 4;
+      grid-row: 1 / span 4;
+    }
+
+    .frontmatter {
+      grid-column: 5 / span 4;
+      grid-row: 5 / span 4;
+    }
+
+    .integrations {
+      grid-column: 5 / span 4;
+      grid-row: 9 / span 4;
+    }
+  }
+
+  @media (max-height: 660px) {
+    .layouts > p {
+      display: none!important;
+    }
+  }
+</style>
+
+<div class="container">
+  <div class="box install">
+    <h2><a href="docs#install-it">Install</a></h2>
+
+Quick installation instructions.
+
+```bash
+npm i -D mdsvex
+```
+
+```bash
+yarn add --dev mdsvex
+```
+
+  </div>
+  <div class="box use">
+    <h2><a href="docs#use-it">Use</a></h2>
+
+Add mdsvex to your project
+
+```js
+svelte({
+  extensions: [
+    '.svelte',
+    '.svx'
+  ],
+  preprocess: mdsvex(config)
+})
+```
+  </div>
+  <div class="box config">
+    <h2><a href="/docs#options">Configure</a></h2>
+
+    <dl>
+      <dt>
+        <a href="docs#extension"><span>extension</span></a>
+      </dt>
+      <dd>use a custom extension</dd>
+      <dt>
+        <a href="docs#smartypants"><span>smartypants</span>
+      </dt>
+      <dd>fancy typography</dd>
+      <dt>
+        <a href="docs#layout"><span>layout</span></a>
+      </dt>
+      <dd>custom layouts</dd>
+      <dt>
+        <a href="docs#remarkplugins--rehypeplugins"><span>remarkPlugins</span></a>
+      </dt>
+      <dd>use remark plugins</dd>
+      <dt>
+        <a href="docs#remarkplugins--rehypeplugins"><span>rehypePlugins</span></a>
+      </dt>
+      <dd>use rehype plugins</dd>
+      <dt>
+        <a href="docs#highlight"><span>highlight</span></a>
+      </dt>
+      <dd>syntax highlighting</dd>
+      <dt>
+        <a href="docs#frontmatter"><span>frontmatter</span></a>
+      </dt>
+      <dd>change frontmatter language</dd>
+    </dl>
+
+  </div>
+
+  <div class="box layouts">
+    <h2><a href="docs#layouts">Layouts</a></h2>
+
+Custom layouts for mdsvex documents.
+
+<h3><a href="docs#named-layouts">named layouts</a></h3>
+
+Reference layouts by name.
+
+```svx
+---
+layout: blog
+---
+```
+
+<h3><a href="docs#disabling-layouts">disabling layouts</a></h3>
+
+Disable named layouts when needed.
+
+```svx
+---
+layout: false
+---
+```
+
+<h3><a href="docs#custom-components">custom components</a></h3>
+
+<p class="keep">Replace HTML elements with custom components.</p>
+
+  </div>
+
+  <div class="box frontmatter">
+    <h2><a href="docs#frontmatter-1">Frontmatter</a></h2>
+
+Use frontmatter values directly in markdown.
+
+```mdsvex
+---
+title: Fabuloso
+---
+
+# {title}
+```
+
+  </div>
+
+  <div class="box integrations">
+    <h2><a href="docs#integrations">Integrations</a></h2>
+    <p class="keep">Using mdsvex with other things</p>
+  </div>
+</div>

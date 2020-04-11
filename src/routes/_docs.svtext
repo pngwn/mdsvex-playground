@@ -1,6 +1,6 @@
-# mdsvex
+<!-- # mdsvex -->
 
-A markdown preprocessor for [Svelte][svelte] components. Basically [MDX][mdx] for Svelte.
+mdsvex is a markdown preprocessor for [Svelte][svelte] components. Basically [MDX][mdx] for Svelte.
 
 This preprocessor allows you to use Svelte components in your markdown, or markdown in your Svelte components.
 
@@ -8,7 +8,7 @@ mdsvex supports all Svelte syntax and _almost_ all markdown syntax. See [limitat
 
 You can do this:
 
-```mdsvex
+```svx
 <script>
 	import { Chart } from "../components/Chart.svelte";
 </script>
@@ -65,7 +65,7 @@ export default {
 
 The preprocessor function accepts an object of options, that allow you to customise your experience. The options are global to all parsed files.
 
-```ts
+```typescript
 interface MdsvexOptions {
 	extension: string;
 	smartypants: boolean | smartypantsOptions;
@@ -277,13 +277,12 @@ highlight: (code: string, lang: string) => string;
 
 Without any configuration, mdsvex will automatically highlight the syntax of over 100 languages using PrismJS[prism], you simply need to add the language name to the fenced code block. Languages are loaded on-demand and cached for later use, this feature does not unnecessarily load all languages for highlighting purposes.
 
-```md
-\`\`\`js
-function my_function(string) {
+````md
+```js
+function my_function(string)
 	return string.toUpperCase();
-}
-\`\`\`
 ```
+````
 
 Will produce:
 
