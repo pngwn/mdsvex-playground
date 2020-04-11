@@ -25,7 +25,8 @@
   nav {
     position: absolute;
     top: 0;
-    left: 25px;
+    left: 0;
+    right: 0;
   }
 
   ul {
@@ -66,12 +67,12 @@
     opacity: 1;
   }
 
-  @media (max-width: 930px) {
+  /* @media (max-width: 930px) {
     nav {
       left: 0px;
       width: 100%;
     }
-  }
+  } */
 </style>
 
 <svelte:window bind:innerWidth={w} />

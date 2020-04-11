@@ -90,6 +90,11 @@ body,
 	height: 100%;
 }
 
+#sapper {
+	max-width: 110rem;
+	margin: auto;
+}
+
 * {
 	box-sizing: inherit;
 	margin: 0;
