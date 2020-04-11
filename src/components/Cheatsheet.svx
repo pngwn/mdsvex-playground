@@ -9,15 +9,15 @@
   dl {
     list-style: none;
     padding: 0;
-    display: flex;
     flex-direction: column;
     justify-content: space-between;
     height: 90%;
     margin: 0;
+    font-size: 1.9rem;
   }
 
   dd {
-    margin: -7% 0 15px 0;
+    margin: 5px 0 15px 0;
     font-style: italic;
   }
 
@@ -34,10 +34,6 @@
     border-radius: 3px;
   }
 
-  dt::after {
-    content: 'linky'
-  }
-
   li:first-child > span {
     margin-top: 14px;
   }
@@ -52,11 +48,11 @@
   .container {
     width: 100%;
     height: calc(100vh - 120px);
-
     display: grid;
     grid-template-columns: repeat(12, 1fr);
     grid-template-rows: repeat(12, 1fr);
     grid-gap: 30px;
+    max-height: 780px;
   }
 
   .box {
@@ -178,19 +174,21 @@
   }
 
   @media (max-height: 900px) {
-    dd {
+    /* dd {
       margin-top: 0;
-    }
+    } */
   }
 
   @media (max-height: 800px) {
     .config > dl {
-      height: 65vh;
+      font-size: 1.8rem;
     }
+
     dd {
-      height: 0;
+      /* height: 0;
       overflow: hidden;
-      margin: 0;
+      margin: 0; */
+      margin: 0 0 5px 0;
     }
 
     .box > pre {
@@ -224,6 +222,15 @@
     .integrations {
       grid-column: 5 / span 4;
       grid-row: 9 / span 4;
+    }
+  }
+
+  @media (max-height: 700px) {
+    dd {
+      height: 0;
+      overflow: hidden;
+      margin: 0;
+      /* margin: 0 0 5px 0; */
     }
   }
 
