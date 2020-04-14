@@ -292,6 +292,13 @@
     }
   }
 
+  @media (max-width: 1100px) {
+    nav {
+      padding-left: 0;
+      margin-left: 0;
+    }
+  }
+
   .container {
     display: grid;
     grid-template-columns: repeat(12, 1fr);

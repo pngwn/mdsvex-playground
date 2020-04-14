@@ -21,9 +21,6 @@
     font-style: italic;
   }
 
-  .cheatsheet :global(li) {
-  }
-
   .cheatsheet :global(dt span) {
     font-family: monospace;
     font-size: 16px;
@@ -176,7 +173,7 @@
     } */
   }
 
-  @media (max-height: 840px) {
+  @media (max-height: 840px) and (min-height: 1100px) {
     .cheatsheet :global(.config > dl) {
       font-size: 1.8rem;
     }
@@ -227,7 +224,6 @@
       height: 0;
       overflow: hidden;
       margin: 0;
-      /* margin: 0 0 5px 0; */
     }
   }
 
@@ -235,6 +231,62 @@
     .cheatsheet :global(.layouts > p) {
       display: none!important;
     }
+  }
+
+  @media (max-width: 1100px) {
+
+
+    .cheatsheet :global(.container) {
+      width: 100%;
+      display: grid;
+      flex-wrap: wrap;
+      grid-template-columns: repeat(2, 1fr);
+      grid-template-rows: repeat(26, 1fr);
+      grid-gap: 30px;
+      max-height: 1300px;
+      height: 1300px;
+    }
+
+
+
+    .cheatsheet :global(.install) {
+      grid-column: 1 / span 1;
+      grid-row: 1 / span 5;
+    }
+
+    .cheatsheet :global(.use) {
+      grid-column: 2 / span 1;
+      grid-row: 1 / span 6;
+    }
+
+    .cheatsheet :global(.config) {
+      grid-column: 1 / span 1;
+      grid-row: 6 / span 14;
+    /* display: grid;
+    grid-template-rows: repeat(12, 1fr); */
+    }
+
+    .cheatsheet :global(.config > dl) {
+      font-size: 1.8rem;
+    }
+
+    .cheatsheet :global(.layouts) {
+      grid-column: 2 / span 1;
+      grid-row: 7 / span 11;
+    }
+
+
+
+    .cheatsheet :global(.frontmatter) {
+      grid-column: 1 / span 1;
+      grid-row: 20 / span 5;
+    }
+
+    .cheatsheet :global(.integrations) {
+      grid-column: 2 / span 1;
+      grid-row: 18 / span 4;
+    }
+
   }
 </style>
 
