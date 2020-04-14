@@ -3,8 +3,6 @@
   import { onMount } from "svelte";
   import docs from "./_docs.svtext";
   import Cheatsheet from "../components/Cheatsheet.svx";
-  // console.log(docs);
-  // console.log(Cheatsheet);
 
   let root;
   let scrollY = 0;
@@ -50,7 +48,7 @@
   }
 
   function calculate_positions() {
-    if (scrollY < document.documentElement.clientHeight) {
+    if (root.getBoundingClientRect().top >= 0) {
       position = "absolute";
     } else {
       position = "fixed";
@@ -94,7 +92,7 @@
     top: 0;
     height: calc(100% - 70px);
     overflow-y: scroll;
-    margin-top: 70px;
+    margin-top: 40px;
   }
 
   ul {
@@ -133,6 +131,7 @@
     padding: 3px 6px 0 6px !important;
     transition: 0.3s;
     font-family: "fira-full";
+    font-size: 1.4rem;
   }
 
   a:hover,
@@ -152,10 +151,6 @@
   a.active code {
     background: #333;
     color: #eee;
-  }
-
-  article {
-    /* margin: 50px auto 0px auto; */
   }
 
   article :global(h1) {
@@ -272,6 +267,14 @@
     padding-top: 30px;
   }
 
+  .mini {
+    text-transform: lowercase;
+    margin: 0;
+    font-family: "fira-full";
+    font-weight: normal;
+    font-size: 1.6rem;
+  }
+
   @media (max-width: 930px) {
     article {
       width: 100%;
@@ -313,6 +316,7 @@
     {#if position}
       <nav style="position: {position};">
         <ul>
+
           {#each nav as [title, href, children]}
             <li class={children ? 'solo' : 'solo'}>
               <a
@@ -344,6 +348,12 @@
               {/if}
             </li>
           {/each}
+          <li class="mini">
+            <a href="/playground">playground</a>
+          </li>
+          <li class="mini">
+            <a href="https://www.github.com/pngwn/mdsvex">github</a>
+          </li>
         </ul>
       </nav>
     {/if}
