@@ -1,11 +1,13 @@
 <script>
   import { stores } from "@sapper/app";
   import { onMount } from "svelte";
+  import { fade } from "svelte/transition";
   import docs from "./_docs.svtext";
   import Cheatsheet from "../components/Cheatsheet.svx";
 
   let root;
   let scrollY = 0;
+  let width = 1100;
   let current;
   let position = "";
 
@@ -24,8 +26,8 @@
         ["remarkPlugins", "docs#remarkplugins--rehypeplugins", true],
         ["rehypePlugins", "docs#remarkplugins--rehypeplugins", true],
         ["highlight", "docs#highlight", true],
-        ["frontmatter", "docs#frontmatter", true]
-      ]
+        ["frontmatter", "docs#frontmatter", true],
+      ],
     ],
     [
       "Layouts",
@@ -33,14 +35,14 @@
       [
         ["named layouts", "docs#named-layouts", false],
         ["disabling layouts", "docs#disabling-layouts", false],
-        ["custom components", "docs#custom-components", false]
-      ]
+        ["custom components", "docs#custom-components", false],
+      ],
     ],
     ["Frontmatter", "docs#frontmatter-1"],
-    ["Limitations", "docs#limitations"]
+    ["Limitations", "docs#limitations"],
   ];
 
-  $: root && scrollY && calculate_positions();
+  $: root && typeof scrollY === "number" && width && calculate_positions();
 
   function remove_origin(href) {
     const re = new RegExp(`http(s*)://${$page.host}/`);
@@ -48,14 +50,14 @@
   }
 
   function calculate_positions() {
-    if (root.getBoundingClientRect().top >= 0) {
+    if (root.getBoundingClientRect().top >= 0 && window.innerWidth > 1100) {
       position = "absolute";
     } else {
       position = "fixed";
     }
 
     const nodes = Array.from(root.children).filter(
-      v => v.tagName === "H2" || v.tagName === "H3"
+      (v) => v.tagName === "H2" || v.tagName === "H3"
     );
     const last = nodes.length - 1;
 
@@ -83,16 +85,19 @@
 
     calculate_positions();
   });
+
+  let menu_show = false;
 </script>
 
 <style>
   nav {
-    padding: 20px 30px;
-    width: 300px;
+    padding: 2rem 3rem;
+    width: 30rem;
     top: 0;
-    height: calc(100% - 70px);
+    height: calc(100% - 7rem);
     overflow-y: scroll;
-    margin-top: 40px;
+    margin-top: 4rem;
+    background: #fafafa;
   }
 
   ul {
@@ -100,7 +105,7 @@
   }
 
   li {
-    margin: 30px 0px;
+    margin: 3rem 0px;
     position: relative;
     text-transform: uppercase;
     font-weight: bold;
@@ -108,7 +113,7 @@
   }
 
   ul > li > ul > li {
-    margin: 10px 0px;
+    margin: 1rem 0px;
     text-transform: none;
     font-weight: 400;
     font-family: "lato-sub";
@@ -128,7 +133,7 @@
     color: #777;
     -webkit-font-smoothing: initial;
     background: #eee;
-    padding: 3px 6px 0 6px !important;
+    padding: 0.3rem 0.6rem 0 0.6rem !important;
     transition: 0.3s;
     font-family: "fira-full";
     font-size: 1.4rem;
@@ -154,7 +159,7 @@
   }
 
   article :global(h1) {
-    margin-bottom: 46px;
+    margin-bottom: 4.6rem;
     font-family: "roboto-sub";
     font-weight: 100;
     font-size: 6rem;
@@ -189,7 +194,7 @@
     color: #333;
     -webkit-font-smoothing: initial;
     background: #eee;
-    padding: 1px 4px 0;
+    padding: 0.1rem 0.4rem 0;
     white-space: pre;
     word-spacing: normal;
     word-break: normal;
@@ -243,8 +248,8 @@
 
   article :global(pre.language-sig) {
     display: inline-block;
-    padding: 2px 7px 2px;
-    margin: 20px 0 0 0;
+    padding: 0.2rem 0.7rem 0.2rem;
+    margin: 20rem 0 0 0;
   }
 
   article :global(a) {
@@ -264,7 +269,7 @@
     display: block;
     height: 100%;
     width: 0;
-    padding-top: 30px;
+    padding-top: 1.23rem;
   }
 
   .mini {
@@ -275,36 +280,12 @@
     font-size: 1.6rem;
   }
 
-  @media (max-width: 930px) {
-    article {
-      width: 100%;
-      max-width: 100%;
-      margin-left: 0;
-      margin-top: 20px;
-    }
-
-    article :global(h1) {
-      text-align: center;
-    }
-
-    nav {
-      transform: translateX(-300px);
-    }
-  }
-
-  @media (max-width: 1100px) {
-    nav {
-      padding-left: 0;
-      margin-left: 0;
-    }
-  }
-
   .container {
     display: grid;
     grid-template-columns: repeat(12, 1fr);
     grid-template-rows: 1fr;
-    grid-gap: 30px;
-    margin-top: 60px;
+    grid-gap: 3rem;
+    margin-top: 6rem;
   }
 
   article {
@@ -312,16 +293,108 @@
     max-width: 100%;
     min-width: 0;
   }
+
+  @media (max-width: 930px) {
+    article {
+      width: 100%;
+      max-width: 100%;
+      margin-left: 0;
+      margin-top: 2rem;
+    }
+
+    article :global(h1) {
+      text-align: center;
+    }
+  }
+
+  @media (max-width: 1100px) {
+    nav {
+      left: 0;
+      transform: translateX(-36rem);
+      transition: 0.2s;
+      margin-top: 0;
+      height: 100%;
+      z-index: 99;
+      box-shadow: 0 1px 4px 2px rgba(1, 1, 1, 0.1);
+      padding-left: 5rem;
+    }
+
+    article {
+      grid-column: 1 / span 12;
+      padding: 0 6rem;
+    }
+
+    .menu {
+      display: block;
+      position: fixed;
+      top: 1.8rem;
+      right: 1.8rem;
+      z-index: 999;
+      height: 3.2rem;
+      padding: 5px 7px;
+      background: #fff;
+      box-sizing: border-box;
+      border-radius: 3px;
+      /* border: 1px solid grey; */
+      box-shadow: 0 1px 5px rgba(0, 0, 0, 0.15);
+    }
+
+    .icon {
+      width: 2rem;
+      display: inline-block;
+    }
+
+    li.solo:first-child {
+      margin-top: 0;
+    }
+  }
+
+  .menu_show {
+    transform: translateX(0);
+  }
+
+  @media (max-width: 550px) {
+    nav {
+      width: 100%;
+      transform: translateX(-100%);
+    }
+  }
 </style>
 
-<svelte:window bind:scrollY />
+<svelte:window bind:scrollY bind:innerWidth={width} />
+
+{#if width < 1100}
+  <span class="menu" on:click={() => (menu_show = !menu_show)}>
+    <span class="icon">
+      <svg
+        aria-hidden="true"
+        focusable="false"
+        data-prefix="fas"
+        data-icon="bars"
+        class="svg-inline--fa fa-bars fa-w-14"
+        role="img"
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 448 512">
+        <path
+          fill="currentColor"
+          d="M16 132h416c8.837 0 16-7.163
+          16-16V76c0-8.837-7.163-16-16-16H16C7.163 60 0 67.163 0 76v40c0 8.837
+          7.163 16 16 16zm0 160h416c8.837 0 16-7.163
+          16-16v-40c0-8.837-7.163-16-16-16H16c-8.837 0-16 7.163-16 16v40c0 8.837
+          7.163 16 16 16zm0 160h416c8.837 0 16-7.163
+          16-16v-40c0-8.837-7.163-16-16-16H16c-8.837 0-16 7.163-16 16v40c0 8.837
+          7.163 16 16 16z" />
+      </svg>
+    </span>
+  </span>
+{/if}
 
 <main>
   <Cheatsheet />
   <div style="position: relative;">
 
     {#if position}
-      <nav style="position: {position};">
+      <nav style="position: {position};" class:menu_show>
         <ul>
 
           {#each nav as [title, href, children]}
@@ -329,7 +402,7 @@
               <a
                 class:active={current === href}
                 {href}
-                on:click={() => (current = href)}>
+                on:click={() => (menu_show = false) && (current = href)}>
                 {title}
               </a>
               {#if children}
@@ -339,12 +412,14 @@
                       {#if is_code}
                         <a
                           class:active={current === child_link}
+                          on:click={() => (menu_show = false)}
                           href={child_link}>
                           <code>{child_title}</code>
                         </a>
                       {:else}
                         <a
                           class:active={current === child_link}
+                          on:click={() => (menu_show = false)}
                           href={child_link}>
                           {child_title}
                         </a>
