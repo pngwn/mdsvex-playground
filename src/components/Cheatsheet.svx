@@ -1,7 +1,7 @@
 <style>
   :global(body) {
     background: #f8f8f8;
-    padding: 60px;
+
     /* height: 100vh; */
     box-sizing: border-box;
   }
@@ -50,6 +50,7 @@
     grid-template-rows: repeat(12, 1fr);
     grid-gap: 30px;
     max-height: 780px;
+    padding: 60px;
   }
 
   .cheatsheet :global(.box) {
@@ -288,6 +289,21 @@
     }
 
   }
+
+   @media (max-width: 750px) {
+     .cheatsheet :global(.container){
+       display: block;
+       height: auto;
+       max-height: fit-content;
+       padding: 60px 0;
+     }
+
+     .cheatsheet :global(.box){
+       display: block;
+       padding: 2rem;
+       margin: 3rem 0;
+     }
+   }
 </style>
 
 <script>
