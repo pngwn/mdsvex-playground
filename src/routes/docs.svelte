@@ -310,7 +310,7 @@
   @media (max-width: 1100px) {
     nav {
       left: 0;
-      transform: translateX(-36rem);
+      /* transform: translateX(36rem); */
       transition: 0.2s;
       margin-top: 0;
       height: 100%;
@@ -356,7 +356,7 @@
   @media (max-width: 550px) {
     nav {
       width: 100%;
-      transform: translateX(-100%);
+      transform: translateX(100%);
     }
 
     article {
