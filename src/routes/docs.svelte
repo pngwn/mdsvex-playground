@@ -310,13 +310,13 @@
   @media (max-width: 1100px) {
     nav {
       left: 0;
-      /* transform: translateX(36rem); */
       transition: 0.2s;
       margin-top: 0;
       height: 100%;
       z-index: 99;
       box-shadow: 0 1px 4px 2px rgba(1, 1, 1, 0.1);
       padding-left: 5rem;
+      transform: translateX(100%);
     }
 
     article {
@@ -356,7 +356,6 @@
   @media (max-width: 550px) {
     nav {
       width: 100%;
-      transform: translateX(100%);
     }
 
     article {
