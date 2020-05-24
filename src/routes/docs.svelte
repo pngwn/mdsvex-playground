@@ -358,6 +358,22 @@
       width: 100%;
       transform: translateX(-100%);
     }
+
+    article {
+      padding: 0px;
+      /* display: block;÷ */
+    }
+
+    article > :global(*) {
+      margin-left: 30px !important;
+      margin-right: 30px !important;
+    }
+
+    article > :global(pre) {
+      margin-left: 0 !important;
+      margin-right: 0 !important;
+      border-radius: 0 !important;
+    }
   }
 </style>
 
