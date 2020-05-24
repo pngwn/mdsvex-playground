@@ -220,7 +220,7 @@
     }
   }
 
-  @media (max-height: 700px) {
+  @media (max-height: 700px) and (min-width: 1099px) {
     .cheatsheet :global(dd) {
       height: 0;
       overflow: hidden;
@@ -228,7 +228,7 @@
     }
   }
 
-  @media (max-height: 660px) {
+  @media (max-height: 660px) and (min-width: 1099px) {
     .cheatsheet :global(.layouts > p) {
       display: none!important;
     }
@@ -246,6 +246,7 @@
       grid-gap: 30px;
       max-height: 1300px;
       height: 1300px;
+      padding: 40px 60px;
     }
 
 
@@ -257,7 +258,7 @@
 
     .cheatsheet :global(.use) {
       grid-column: 2 / span 1;
-      grid-row: 1 / span 6;
+      grid-row: 1 / span 7;
     }
 
     .cheatsheet :global(.config) {
@@ -273,37 +274,44 @@
 
     .cheatsheet :global(.layouts) {
       grid-column: 2 / span 1;
-      grid-row: 7 / span 11;
+      grid-row: 8 / span 11;
     }
 
 
 
     .cheatsheet :global(.frontmatter) {
       grid-column: 1 / span 1;
-      grid-row: 20 / span 5;
+      grid-row: 20 / span 6;
     }
 
     .cheatsheet :global(.integrations) {
       grid-column: 2 / span 1;
-      grid-row: 18 / span 4;
+      grid-row: 19 / span 4;
     }
 
   }
 
    @media (max-width: 750px) {
      .cheatsheet :global(.container){
-       display: block;
-       height: auto;
-       max-height: fit-content;
-       padding: 60px 0;
+        display: block;
+        height: auto;
+        max-height: fit-content;
+        padding: 40px 0px;
      }
 
      .cheatsheet :global(.box){
        display: block;
        padding: 2rem;
        margin: 3rem 0;
+       border-radius: 0;
      }
+
+
    }
+
+   .cheatsheet :global(.config > dl) {
+       height: fit-content;
+     }
 </style>
 
 <script>
