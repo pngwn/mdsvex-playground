@@ -309,7 +309,7 @@
 
   @media (max-width: 1100px) {
     nav {
-      left: 0;
+      right: 0;
       transition: 0.2s;
       margin-top: 0;
       height: 100%;
