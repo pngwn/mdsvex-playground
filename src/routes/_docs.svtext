@@ -465,7 +465,7 @@ Would normally compile to:
 </ul>
 ```
 
-Custom compments allow you to replace these element with components. You can define components by exporting named exports from the `context="module"` script of your Layout file:
+Custom components allow you to replace these elements with components. You can define components by exporting named exports from the `context="module"` script of your Layout file:
 
 ```svelte
 <script context="module">

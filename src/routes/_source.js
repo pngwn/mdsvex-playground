@@ -15,7 +15,7 @@ list: [1, 2, 3, 4, "boo"]
 	let number = 45;
 </script>
 
-# { metadata.title }
+# { title }
 
 ## Good stuff in your markdown
 
@@ -23,7 +23,7 @@ Markdown is pretty good but sometimes you just need more.
 
 Sometimes you need a boinger like this:
 
-<Boinger color="{metadata.color}"/>
+<Boinger color="{ color }"/>
 
 Not many people have a boinger right in their markdown.
 
