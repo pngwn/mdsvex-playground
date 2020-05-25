@@ -6,14 +6,14 @@
   const _input = [
     [
       { color: "green", text: "#", l: 0 },
-      { color: "green", text: " mdsvex", l: 1 }
+      { color: "green", text: " mdsvex", l: 1 },
     ],
     [{ color: "grey", text: "svelte in markdown ", l: 0 }],
     [
       { color: "teal", text: "<", l: 0 },
       { color: "blue", text: "Penguin", l: 1 },
-      { color: "teal", text: " />", l: 8 }
-    ]
+      { color: "teal", text: " />", l: 8 },
+    ],
   ];
 
   const _heading = "mdsvex";
@@ -26,7 +26,7 @@
   let penguin = false;
   let walk = false;
 
-  const wait = t => new Promise(res => setTimeout(res, t));
+  const wait = (t) => new Promise((res) => setTimeout(res, t));
 
   onMount(async () => {
     await wait(1000);
@@ -48,7 +48,7 @@
       { color: "teal", text: "{", l: 14 },
       { color: "orange", text: "true", l: 20 },
       { color: "teal", text: "}", l: 15 },
-      { color: "teal", text: " />", l: 8 }
+      { color: "teal", text: " />", l: 8 },
     ];
     await wait(3000);
     walk = true;
@@ -61,6 +61,8 @@
     as="font"
     crossorigin
     href="/fonts/roboto-thin-webfont.woff2" />
+  <title>mdsvex - markdown in svelte!</title>
+
 </svelte:head>
 
 <main>
