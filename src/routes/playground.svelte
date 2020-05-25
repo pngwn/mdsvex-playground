@@ -172,6 +172,9 @@
 </style>
 
 <svelte:window bind:innerWidth={width} />
+<svelte:head>
+  <title>mdsvex playground!</title>
+</svelte:head>
 
 <div class="outer" class:mobile={is_mobile}>
   <div class="inner" class:offset={checked === 'output'}>

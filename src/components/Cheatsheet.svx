@@ -44,14 +44,14 @@
   }
 
   .cheatsheet :global(.container) {
-    width: 100%;
-    height: 900px;
+    height: 850px;
     display: grid;
     grid-template-columns: repeat(12, 1fr);
     grid-template-rows: repeat(12, 1fr);
     grid-gap: 30px;
-    padding: 60px;
-    min-height: 900px;
+    min-height: 850px;
+    max-height: 850px;
+    margin: 65px;
   }
 
   .cheatsheet :global(.box) {
@@ -60,7 +60,6 @@
     min-width: 0;
     min-height: 0;
     box-shadow:  0 1px 5px rgba(0, 0, 0, 0.15);
-
   }
 
   .cheatsheet :global(.install) {
@@ -171,7 +170,6 @@
 
   @media (max-width: 1100px) {
     .cheatsheet :global(.container) {
-      width: 100%;
       display: grid;
       flex-wrap: wrap;
       grid-template-columns: repeat(2, 1fr);
@@ -179,7 +177,6 @@
       grid-gap: 30px;
       max-height: 1450px;
       height: 1450px;
-      padding: 65px;
     }
 
     .cheatsheet :global(.install) {
@@ -215,35 +212,35 @@
       grid-column: 2 / span 1;
       grid-row: 17 / span 3;
     }
-
   }
 
-   @media (max-width: 750px) {
-     .cheatsheet :global(.container){
-        display: block;
-        height: auto;
-        max-height: inherit;
-        padding: 40px 60px;
-     }
+  @media (max-width: 750px) {
+    .cheatsheet :global(.container) {
+      display: block;
+      height: auto;
+      max-height: inherit;
+      margin: 65px 60px;
+    }
 
-     .cheatsheet :global(.box){
-       display: block;
-       padding: 2rem;
-       margin: 3rem 0;
-       border-radius: 0;
-     }
-   }
+    .cheatsheet :global(.box){
+      display: block;
+      padding: 2rem;
+      margin: 3rem 0;
+      border-radius: 0;
+    }
+  }
 
-   @media (max-width: 550px) {
-     .cheatsheet :global(.container){
+  @media (max-width: 550px) {
+    .cheatsheet :global(.container) {
+      margin: 65px 0 0 0;
+    }
+  }
 
-        padding: 40px 0 0 0;
-     }
-   }
+  .cheatsheet :global(.config > dl) {
+    height: fit-content;
+  }
 
-   .cheatsheet :global(.config > dl) {
-       height: fit-content;
-     }
+
 </style>
 
 <script>

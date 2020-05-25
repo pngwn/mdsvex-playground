@@ -58,11 +58,14 @@
     }
 
     const nodes = Array.from(root.children).filter(
-      (v) => v.tagName === "H2" || v.tagName === "H3"
+      (v) =>
+        (v.tagName === "H2" || v.tagName === "H3") &&
+        v.innerText !== "Integrations" // its messing up my shit, will remove when I add the sidebar link for integrations
     );
-    const last = nodes.length - 1;
 
-    if (root.getBoundingClientRect().bottom === window.innerHeight) {
+    const last = nodes.length - 1;
+    if (~~root.getBoundingClientRect().bottom === window.innerHeight) {
+      console.log("boo");
       current = "docs" + remove_origin(nodes[last].children[0].href);
       return;
     }
@@ -291,13 +294,19 @@
     grid-template-columns: repeat(12, 1fr);
     grid-template-rows: 1fr;
     grid-gap: 3rem;
-    margin-top: 6rem;
+    margin-top: 3rem;
+  }
+
+  .container :global(h1) {
+    font-size: 4rem;
+    text-align: left;
   }
 
   article {
     grid-column: 5 / span 8;
     max-width: 100%;
     min-width: 0;
+    clear: both;
   }
 
   @media (max-width: 930px) {
@@ -403,9 +412,19 @@
       padding: 1rem 3rem;
     }
   }
+
+  @media (max-width: 330px) {
+    .menu {
+      top: 7.8rem;
+    }
+  }
 </style>
 
 <svelte:window bind:scrollY bind:innerWidth={width} />
+
+<svelte:head>
+  <title>mdsvex docs!</title>
+</svelte:head>
 
 {#if width < 1100}
   <span class="menu" on:click={() => (menu_show = !menu_show)}>

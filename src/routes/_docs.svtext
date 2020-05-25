@@ -1,4 +1,4 @@
-<!-- # mdsvex -->
+# mdsvex
 
 mdsvex is a markdown preprocessor for [Svelte][svelte] components. Basically [MDX][mdx] for Svelte.
 
