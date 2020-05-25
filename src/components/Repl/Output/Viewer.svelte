@@ -40,19 +40,19 @@
 
   onMount(() => {
     proxy = new ReplProxy(iframe, {
-      on_fetch_progress: progress => {
+      on_fetch_progress: (progress) => {
         pending_imports = progress;
       },
-      on_error: event => {
+      on_error: (event) => {
         push_logs({ level: "error", args: [event.value] });
       },
-      on_unhandled_rejection: event => {
+      on_unhandled_rejection: (event) => {
         let error = event.value;
         if (typeof error === "string") error = { message: error };
         error.message = "Uncaught (in promise): " + error.message;
         push_logs({ level: "error", args: [error] });
       },
-      on_console: log => {
+      on_console: (log) => {
         if (log.level === "clear") {
           logs = [log];
         } else if (log.duplicate) {
@@ -69,7 +69,7 @@
           push_logs(log);
           last_console_event = log;
         }
-      }
+      },
     });
 
     iframe.addEventListener("load", () => {
@@ -190,17 +190,6 @@
     opacity: 0.25;
   }
 
-  button {
-    color: #999;
-    font-size: 12px;
-    text-transform: uppercase;
-    display: block;
-  }
-
-  button:hover {
-    color: #333;
-  }
-
   .overlay {
     position: absolute;
     bottom: 0;
@@ -220,15 +209,13 @@
       {srcdoc} />
   </div>
 
-  {#if !funky}
-    <div class="overlay">
-      {#if error}
-        <Message kind="error" details={error} />
-      {:else if status || !$bundle}
-        <Message kind="info" truncate>
-          {status || 'loading Svelte compiler...'}
-        </Message>
-      {/if}
-    </div>
-  {/if}
+  <div class="overlay">
+    {#if error}
+      <Message kind="error" details={error} />
+    {:else if status || !$bundle}
+      <Message kind="info" truncate>
+        {status || 'loading Svelte compiler...'}
+      </Message>
+    {/if}
+  </div>
 </div>
