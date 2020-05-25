@@ -219,6 +219,14 @@
     overflow: hidden;
     border: 1px solid #ddd;
   }
+
+  .container section {
+    position: absolute;
+    top: 0;
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+  }
 </style>
 
 <div class="container" class:orientation>
