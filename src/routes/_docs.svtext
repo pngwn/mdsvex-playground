@@ -542,6 +542,10 @@ import { metadata } from "./some-mdsvex-file.svx";
 
 Frontmatter also interacts with layouts, you can find more details in the [Layout section](docs#layouts).
 
+## Integrations
+
+_coming soon_
+
 ## Limitations
 
 In markdown you can begin a code block by indenting 4 spaces. This doesn't not work in mdsvex as indentation is common with XML-based languages. Indenting 4 spaces will do nothing.
