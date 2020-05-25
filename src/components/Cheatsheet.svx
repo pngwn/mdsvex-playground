@@ -296,7 +296,7 @@
         display: block;
         height: auto;
         max-height: fit-content;
-        padding: 40px 0px;
+        padding: 40px 60px;
      }
 
      .cheatsheet :global(.box){
@@ -305,6 +305,17 @@
        margin: 3rem 0;
        border-radius: 0;
      }
+
+
+   }
+
+   @media (max-width: 550px) {
+     .cheatsheet :global(.container){
+
+        padding: 40px 0 0 0;
+     }
+
+
 
 
    }

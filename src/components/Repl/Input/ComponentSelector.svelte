@@ -74,7 +74,7 @@
     const component = {
       name: uid++ ? `Component${uid}` : "Component1",
       type: "svelte",
-      source: ""
+      source: "",
     };
 
     editing = component;
@@ -84,13 +84,13 @@
       document.getElementById(component.name).scrollIntoView(false);
     });
 
-    components.update(components => components.concat(component));
+    components.update((components) => components.concat(component));
     handle_select(component);
   }
 
   function isComponentNameUsed(editing) {
     return $components.find(
-      component => component !== editing && component.name === editing.name
+      (component) => component !== editing && component.name === editing.name
     );
   }
 </script>
@@ -239,7 +239,7 @@
           class:active={component === $selected}
           class:funky
           on:click={() => selectComponent(component)}
-          on:dblclick={e => e.stopPropagation()}>
+          on:dblclick={(e) => e.stopPropagation()}>
           {#if component.name == 'App' && index === 0}
             <div class="uneditable">App.{component.type}</div>
           {:else if component === editing}
@@ -254,7 +254,7 @@
               bind:value={editing.name}
               on:focus={selectInput}
               on:blur={closeEdit}
-              on:keydown={e => e.which === 13 && !isComponentNameUsed(editing) && e.target.blur()}
+              on:keydown={(e) => e.which === 13 && !isComponentNameUsed(editing) && e.target.blur()}
               class:duplicate={isComponentNameUsed(editing)} />
           {:else}
             <div

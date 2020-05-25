@@ -37,7 +37,7 @@ svelte({
       </dt>
       <dd>use a custom extension</dd>
       <dt>
-        <a href="docs#smartypants"><span>smartypants</span>
+        <a href="docs#smartypants"><span>smartypants</a></span>
       </dt>
       <dd>fancy typography</dd>
       <dt>

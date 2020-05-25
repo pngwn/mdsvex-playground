@@ -23,7 +23,7 @@
   export function toJSON() {
     return {
       imports: $bundle.imports,
-      components: $components
+      components: $components,
     };
   }
 
@@ -46,7 +46,7 @@
 
     components.set(data.components);
     const matched_component = data.components.find(
-      file => file.name === name && file.type === type
+      (file) => file.name === name && file.type === type
     );
     selected.set(matched_component || data.components[0]);
 
@@ -78,7 +78,7 @@
     hydratable: false,
     customElement: false,
     immutable: false,
-    legacy: false
+    legacy: false,
   });
 
   let module_editor;
@@ -93,10 +93,12 @@
 
   // TODO this is a horrible kludge, written in a panic. fix it
   let fulfil_module_editor_ready;
-  let module_editor_ready = new Promise(f => (fulfil_module_editor_ready = f));
+  let module_editor_ready = new Promise(
+    (f) => (fulfil_module_editor_ready = f)
+  );
 
   let fulfil_output_ready;
-  let output_ready = new Promise(f => (fulfil_output_ready = f));
+  let output_ready = new Promise((f) => (fulfil_output_ready = f));
 
   setContext("REPL", {
     components,
@@ -106,21 +108,21 @@
 
     rebundle,
 
-    navigate: item => {
+    navigate: (item) => {
       const match = /^(.+)\.(\w+)$/.exec(item.filename);
       if (!match) return; // ???
 
       const [, name, type] = match;
       const component = $components.find(
-        c => c.name === name && c.type === type
+        (c) => c.name === name && c.type === type
       );
       handle_select(component);
 
       // TODO select the line/column in question
     },
 
-    handle_change: event => {
-      selected.update(component => {
+    handle_change: (event) => {
+      selected.update((component) => {
         // TODO this is a bit hacky — we're relying on mutability
         // so that updating components works... might be better
         // if a) components had unique IDs, b) we tracked selected
@@ -130,13 +132,13 @@
         return component;
       });
 
-      components.update(c => c);
+      components.update((c) => c);
       output.update($selected, $compile_options);
 
       rebundle();
 
       dispatch("change", {
-        components: $components
+        components: $components,
       });
     },
 
@@ -152,7 +154,7 @@
 
     request_focus() {
       module_editor.focus();
-    }
+    },
   });
 
   function handle_select(component) {
@@ -172,9 +174,9 @@
       workersUrl,
       packagesUrl,
       svelteUrl,
-      onstatus: message => {
+      onstatus: (message) => {
         status = message;
-      }
+      },
     });
 
   $: if (output && $selected) {

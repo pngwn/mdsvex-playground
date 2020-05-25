@@ -187,6 +187,10 @@
     font-family: "roboto-full";
   }
 
+  article > :global(ul) {
+    margin-left: 5rem !important;
+  }
+
   article :global(code) {
     font-family: "fira-full";
     position: relative;
@@ -194,11 +198,12 @@
     color: #333;
     -webkit-font-smoothing: initial;
     background: #eee;
-    padding: 0.1rem 0.4rem 0;
+    padding: 0.2rem 0.4rem 0rem 0.4rem;
     white-space: pre;
     word-spacing: normal;
     word-break: normal;
     word-wrap: normal;
+    font-size: 1.4rem;
   }
 
   article :global(pre code) {
@@ -249,7 +254,7 @@
   article :global(pre.language-sig) {
     display: inline-block;
     padding: 0.2rem 0.7rem 0.2rem;
-    margin: 20rem 0 0 0;
+    margin: 2rem 0 0 0;
   }
 
   article :global(a) {
@@ -368,10 +373,14 @@
       margin-right: 30px !important;
     }
 
-    article > :global(pre) {
+    article > :global(pre:not(.language-sig)) {
       margin-left: 0 !important;
       margin-right: 0 !important;
       border-radius: 0 !important;
+    }
+
+    article :global(pre) {
+      padding: 1rem 3rem;
     }
   }
 </style>
