@@ -4,7 +4,7 @@
   import { code_1, code_2, code_3, code_4, code_5 } from "./_source.js";
 
   let repl;
-  let checked;
+  let checked = "input";
   let width;
 
   $: is_mobile = width < 750;
@@ -40,6 +40,10 @@
       ],
     });
   });
+
+  function handle_select() {
+    checked = checked === "input" ? "output" : "input";
+  }
 </script>
 
 <style>
@@ -70,40 +74,138 @@
     transform: translate(-50%, 0);
   }
 
-  .input-output-toggle {
-    display: grid;
+  .toggle-wrap {
+    display: flex;
     position: absolute;
     user-select: none;
-    grid-template-columns: 1fr 40px 1fr;
-    grid-gap: 0.5em;
+    justify-content: center;
     align-items: center;
     width: 100%;
     height: 42px;
     border-top: 1px solid var(--second);
+    overflow: hidden;
   }
-  input {
+
+  .toggle label {
+    margin: 0 0.5em 0;
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .toggle input[type="radio"] {
+    display: inline-block;
+    margin-right: 0px;
+    width: 50%;
+    height: 0%;
+    opacity: 0;
+    position: relative;
+    z-index: 1;
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .toggle-wrapper {
+    display: inline-block;
+    vertical-align: middle;
+    width: 40px;
+    height: 20px;
+    border-radius: 3.5em;
+    position: relative;
+    user-select: none;
+  }
+
+  .toggle-switcher {
     display: block;
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    right: 100%;
+    width: calc(50% - 4px);
+    height: calc(100% - 4px);
+    border-radius: 50%;
+    background-color: #fff;
+    transition: all 0.1s ease-out;
+    z-index: 2;
+    cursor: pointer;
+    user-select: none;
   }
-  span {
-    color: #ccc;
+
+  .toggle-background {
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    border-radius: 3.5em;
+    background-color: cadetblue;
+    transition: all 0.1s ease-out;
+    cursor: pointer;
+    user-select: none;
   }
-  .active {
-    color: #555;
+
+  #output:checked ~ .toggle-switcher {
+    right: 0;
+    left: calc(50% + 2px);
+  }
+
+  #input:checked ~ .toggle-background {
+    background-color: #333;
+  }
+
+  /* support Windows High Contrast Mode. Credit: Adrian Roselli https://twitter.com/aardrian/status/1021372139990134785 */
+
+  @media (max-width: 750px) {
+    .outer {
+      position: absolute;
+      top: 80px;
+      left: 20px;
+      right: 20px;
+      bottom: 20px;
+      margin: auto;
+      border-radius: 5px;
+      overflow: hidden;
+      box-shadow: 0 0 10px 3px rgba(0, 0, 0, 0.2);
+    }
   }
 </style>
 
 <svelte:window bind:innerWidth={width} />
 
 <div class="outer" class:mobile={is_mobile}>
-  <div class="inner" class:offset={checked}>
+  <div class="inner" class:offset={checked === 'output'}>
     <Repl workersUrl="/workers" bind:this={repl} fixed={is_mobile} />
   </div>
 
   {#if is_mobile}
-    <label class="input-output-toggle">
-      <span class:active={!checked} style="text-align: right">input</span>
-      <input type="checkbox" bind:checked />
-      <span class:active={checked}>output</span>
-    </label>
+    <div class="toggle-wrap">
+      <div class="toggle">
+        <label for="input">input</label>
+        <span class="toggle-wrapper">
+          <input
+            type="radio"
+            name="theme"
+            id="input"
+            bind:group={checked}
+            value="input" />
+          <input
+            type="radio"
+            name="theme"
+            id="output"
+            bind:group={checked}
+            value="output" />
+          <span
+            aria-hidden="true"
+            class="toggle-background"
+            on:click={handle_select} />
+          <span
+            aria-hidden="true"
+            class="toggle-switcher"
+            on:click={handle_select} />
+        </span>
+        <label for="output">output</label>
+      </div>
+    </div>
   {/if}
 </div>
