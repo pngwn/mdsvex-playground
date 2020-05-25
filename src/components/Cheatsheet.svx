@@ -222,7 +222,7 @@
      .cheatsheet :global(.container){
         display: block;
         height: auto;
-        max-height: fit-content;
+        max-height: inherit;
         padding: 40px 60px;
      }
 
@@ -232,8 +232,6 @@
        margin: 3rem 0;
        border-radius: 0;
      }
-
-
    }
 
    @media (max-width: 550px) {
@@ -241,10 +239,6 @@
 
         padding: 40px 0 0 0;
      }
-
-
-
-
    }
 
    .cheatsheet :global(.config > dl) {
