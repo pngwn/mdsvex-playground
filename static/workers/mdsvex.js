@@ -28366,7 +28366,8 @@ ${exports}
 
 	});
 
-	var svelte = unwrapExports(compiler);
+	unwrapExports(compiler);
+	var compiler_1 = compiler.parse;
 
 	var hasOwn = Object.prototype.hasOwnProperty;
 	var toStr = Object.prototype.toString;
@@ -40362,10 +40363,27 @@ ${exports}
 
 	var prettyhtmlHastToHtml = lib$1;
 
+	const void_els = [
+		'area',
+		'base',
+		'br',
+		'col',
+		'embed',
+		'hr',
+		'img',
+		'input',
+		'link',
+		'meta',
+		'param',
+		'source',
+		'track',
+		'wbr',
+	];
+
 	// these regex don't check if it is a valid svelte tag name
 	// i want to defer to svelte's compiler errors so i don't end up reimplementing the svelte parser
 
-	const RE_SVELTE_TAG = /^<(?:[\\/\s])*svelte:([a-z]*)(?:.|\n)*>$/;
+	const RE_SVELTE_TAG = /^<svelte:([a-z]*)[\s\S]*(?:(?:svelte:[a-z]*)|(?:\/))>$/;
 	const RE_SVELTE_TAG_START = /(^\s*)<([\\/\s])*svelte:/;
 
 	function parse_svelte_tag(eat, value, silent) {
@@ -40377,14 +40395,55 @@ ${exports}
 			const trimmed_value = value.trim();
 			let cbPos = 0;
 			let pos = 1;
+			let current_tag = '';
+			let in_tag_name = false;
 
 			while (cbPos > -1) {
-				if (trimmed_value[pos].match(/</)) cbPos++;
-				if (trimmed_value[pos].match(/>/)) cbPos--;
+				if (!trimmed_value[pos]) {
+					break;
+				}
+
+				if (trimmed_value[pos].match(/</)) {
+					cbPos++;
+					current_tag = '';
+					in_tag_name = true;
+				}
+
+				if (in_tag_name && trimmed_value[pos].match(/\s/)) {
+					in_tag_name = false;
+				}
+
+				if (in_tag_name && !trimmed_value[pos].match(/</)) {
+					current_tag += trimmed_value[pos];
+				}
+
+				const is_void = void_els.includes(current_tag);
+
+				if (
+					(is_void && trimmed_value[pos].match(/>/)) ||
+					(trimmed_value[pos - 1] + trimmed_value[pos]).match(/\/>/)
+				) {
+					cbPos--;
+				}
+
+				if ((trimmed_value[pos - 1] + trimmed_value[pos]).match(/<\//)) {
+					let inner_indent = 0;
+
+					while (inner_indent > -1) {
+						if (trimmed_value[pos].match(/>/)) {
+							pos++;
+							inner_indent -= 1;
+							cbPos -= 2;
+						} else {
+							pos++;
+						}
+					}
+				}
+
 				pos++;
 			}
 
-			const match = RE_SVELTE_TAG.exec(trimmed_value.substring(0, pos));
+			const match = RE_SVELTE_TAG.exec(trimmed_value.substring(0, pos).trim());
 
 			return eat(is_svelte_tag[1] + match[0])({
 				type: 'svelteTag',
@@ -40484,9 +40543,7 @@ ${exports}
 		let line;
 		let offset;
 		let character;
-		let count;
 		let sequence;
-		let subvalue;
 
 		const sequences = [
 			[rawOpenExpression$1, rawCloseExpression$1, true],
@@ -40518,7 +40575,7 @@ ${exports}
 		next = next === -1 ? length : next;
 		line = value.slice(index, next);
 		offset = -1;
-		count = sequences.length;
+		const count = sequences.length;
 
 		while (++offset < count) {
 			if (sequences[offset][0].test(line)) {
@@ -40555,7 +40612,7 @@ ${exports}
 			}
 		}
 
-		subvalue = value.slice(0, index);
+		const subvalue = value.slice(0, index);
 
 		return eat(subvalue)({ type: 'html', value: subvalue });
 	}
@@ -46369,9 +46426,7 @@ ${exports}
 
 	// this needs a big old cleanup
 
-	const parse$8 =
-		svelte.default && svelte.default.parse ? svelte.default.parse : svelte.parse;
-
+	const newline$2 = '\n';
 	// extract the yaml from 'yaml' nodes and put them in the vfil for later use
 
 	function default_frontmatter(value, messages) {
@@ -46461,6 +46516,85 @@ ${exports}
 		}
 	}
 
+	function extract_parts(nodes) {
+		// since we are wrapping and replacing we need to keep track of the different component 'parts'
+		// many special tags cannot be wrapped nor can style or script tags
+		const parts = {
+			special: [],
+			html: [],
+			instance: [],
+			module: [],
+			css: [],
+		};
+
+		// iterate through all top level child nodes and assign them to the correct 'part'
+		// anything that is a normal HAST node gets stored as HTML untouched
+		// everything else gets parsed by the svelte parser
+
+		children: for (let i = 0; i < nodes.length; i += 1) {
+			const empty_node =
+				nodes[i].type === 'text' && RE_BLANK.exec(nodes[i].value);
+
+			// i no longer knwo why i did this
+
+			if (empty_node || !nodes[i].value) {
+				if (
+					!parts.html.length ||
+					!(
+						RE_BLANK.exec(nodes[i].value) &&
+						RE_BLANK.exec(parts.html[parts.html.length - 1].value)
+					)
+				) {
+					parts.html.push(nodes[i]);
+				}
+
+				continue children;
+			}
+
+			let result;
+			try {
+				result = compiler_1(nodes[i].value);
+			} catch (e) {
+				parts.html.push(nodes[i]);
+				continue children;
+			}
+
+			// svelte special tags that have to be top level
+
+			const _parts = result.html.children.map(v => {
+				if (
+					v.type === 'Options' ||
+					v.type === 'Head' ||
+					v.type === 'Window' ||
+					v.type === 'Body'
+				) {
+					return ['special', v.start, v.end];
+				} else {
+					return ['html', v.start, v.end];
+				}
+			});
+
+			results: for (const key in result) {
+				if (key === 'html' || !result[key]) continue results;
+				_parts.push([key, result[key].start, result[key].end]);
+			}
+
+			// sort them to ensure the array is in the order they appear in the source, no gaps
+			// this might not be necessary any more, i forget
+			const sorted = _parts.sort((a, b) => a[1] - b[1]);
+
+			// push the nodes into the correct 'part' since they are sorted everything should be in the correct order
+			sorted.forEach(next => {
+				parts[next[0]].push({
+					type: 'raw',
+					value: nodes[i].value.substring(next[1], next[2]),
+				});
+			});
+		}
+
+		return parts;
+	}
+
 	function transform_hast({ layout }) {
 		return transformer;
 
@@ -46489,99 +46623,13 @@ ${exports}
 			if (!layout && !vFile.data.fm) return;
 
 			unistUtilVisit(tree, 'root', node => {
-				// since we are wrapping and replacing we need to keep track of the different component 'parts'
-				// many special tags cannot be wrapped nor can style or script tags
-				const parts = {
-					special: [],
-					html: [],
-					instance: [],
-					module: [],
-					css: [],
-				};
-
-				// iterate through all top level child nodes and assign them to the correct 'part'
-				// anything that is a normal HAST node gets stored as HTML untouched
-				// everything else gets parsed by the svelte parser
-
-				children: for (let i = 0; i < node.children.length; i += 1) {
-					if (
-						(node.children[i].type !== 'raw' &&
-							node.children[i].type === 'text' &&
-							RE_BLANK.exec(node.children[i].value)) ||
-						!node.children[i].value
-					) {
-						if (
-							!parts.html[parts.html.length - 1] ||
-							!(
-								RE_BLANK.exec(node.children[i].value) &&
-								RE_BLANK.exec(parts.html[parts.html.length - 1].value)
-							)
-						) {
-							parts.html.push(node.children[i]);
-						}
-
-						continue children;
-					}
-
-					let result;
-					try {
-						result = parse$8(node.children[i].value);
-					} catch (e) {
-						parts.html.push(node.children[i]);
-						continue children;
-					}
-
-					// svelte special tags that have to be top level
-
-					const _parts = result.html.children.map(v => {
-						if (
-							v.type === 'Options' ||
-							v.type === 'Head' ||
-							v.type === 'Window' ||
-							v.type === 'Body'
-						) {
-							return ['special', v.start, v.end];
-						} else {
-							return ['html', v.start, v.end];
-						}
-					});
-
-					// module scripts
-
-					if (result.module) {
-						_parts.push(['module', result.module.start, result.module.end]);
-					}
-
-					// style elements
-
-					if (result.css) {
-						_parts.push(['css', result.css.start, result.css.end]);
-					}
-
-					// instance scripts
-
-					if (result.instance) {
-						_parts.push(['instance', result.instance.start, result.instance.end]);
-					}
-
-					// sort them to ensure the array is in the order they appear in the source, no gaps
-					// this might not be necessary any more, i forget
-					const sorted = _parts.sort((a, b) => a[1] - b[1]);
-
-					// push the nodes into the correct 'part' since they are sorted everything should be in the correct order
-					sorted.forEach(next => {
-						parts[next[0]].push({
-							type: 'raw',
-							value: node.children[i].value.substring(next[1], next[2]),
-						});
-					});
-				}
-
-				const { special, html, instance, module: _module, css } = parts;
+				const { special, html, instance, module: _module, css } = extract_parts(
+					node.children
+				);
 
 				const fm =
 					vFile.data.fm &&
-					`export const metadata = ${JSON.stringify(vFile.data.fm)};\n` +
+					`export const metadata = ${JSON.stringify(vFile.data.fm)};${newline$2}` +
 						`\tconst { ${Object.keys(vFile.data.fm).join(', ')} } = metadata;`;
 
 				const _fm_layout = vFile.data.fm && vFile.data.fm.layout;
@@ -46654,12 +46702,12 @@ _layout.components
 				if (_layout && !instance[0]) {
 					instance.push({
 						type: 'raw',
-						value: `\n<script>\n\t${layout_import}\n</script>\n`,
+						value: `${newline$2}<script>${newline$2}\t${layout_import}${newline$2}</script>${newline$2}`,
 					});
 				} else if (_layout) {
 					instance[0].value = instance[0].value.replace(
 						RE_SCRIPT,
-						`$1\n\t${layout_import}`
+						`$1${newline$2}\t${layout_import}`
 					);
 				}
 
@@ -46667,12 +46715,12 @@ _layout.components
 				if (!_module[0] && fm) {
 					_module.push({
 						type: 'raw',
-						value: `<script context="module">\n\t${fm}\n</script>`,
+						value: `<script context="module">${newline$2}\t${fm}${newline$2}</script>`,
 					});
 				} else if (fm) {
 					_module[0].value = _module[0].value.replace(
 						RE_MODULE_SCRIPT,
-						`$1\n\t${fm}`
+						`$1${newline$2}\t${fm}`
 					);
 				}
 
@@ -46680,30 +46728,41 @@ _layout.components
 				// if using a layout we only wrap the html and nothing else
 				node.children = [
 					..._module,
-					{ type: 'raw', value: _module[0] ? '\n' : '' },
+					{ type: 'raw', value: _module[0] ? newline$2 : '' },
 					...instance,
-					{ type: 'raw', value: instance[0] ? '\n' : '' },
+					{ type: 'raw', value: instance[0] ? newline$2 : '' },
 					...css,
-					{ type: 'raw', value: css[0] ? '\n' : '' },
+					{ type: 'raw', value: css[0] ? newline$2 : '' },
 					...special,
-					{ type: 'raw', value: special[0] ? '\n' : '' },
+					{ type: 'raw', value: special[0] ? newline$2 : '' },
 					{
 						type: 'raw',
 						value: _layout
 							? `<Layout_MDSVEX_DEFAULT${fm ? ' {...metadata}' : ''}>`
 							: '',
 					},
-					{ type: 'raw', value: '\n' },
+					{ type: 'raw', value: newline$2 },
 					...html,
-					{ type: 'raw', value: '\n' },
+					{ type: 'raw', value: newline$2 },
 					{ type: 'raw', value: _layout ? '</Layout_MDSVEX_DEFAULT>' : '' },
 				];
 			});
 		}
 	}
 
-	function highlight_blocks({ highlighter: highlight_fn }) {
+	// highlighting stuff
+
+	// { [lang]: { path, deps: pointer to key } }
+	const langs = {};
+
+	function highlight_blocks({ highlighter: highlight_fn, alias } = {}) {
 		if (!highlight_fn || browser$1) return;
+
+		if (alias) {
+			for (const lang in alias) {
+				langs[lang] = langs[alias[lang]];
+			}
+		}
 
 		return function(tree, vFile) {
 			unistUtilVisit(tree, 'code', node => {
@@ -46720,14 +46779,10 @@ _layout.components
 		{
 			return `<pre class="language-${lang}">
 <code class="language-${lang || ''}">
-${escape_curlies(escapeHtml_1(code))}
-</code>
+${escape_curlies(escapeHtml_1(code))}</code>
 </pre>`;
 		}
 	}
-
-	const parse$9 =
-		svelte.default && svelte.default.parse ? svelte.default.parse : svelte.parse;
 
 	function stringify$4(options = {}) {
 		this.Compiler = compiler;
@@ -46768,7 +46823,7 @@ ${escape_curlies(escapeHtml_1(code))}
 			.use(escape_code, { blocks: !!highlight })
 			.use(remarkFrontmatter, fm_opts)
 			.use(parse_frontmatter, { parse: fm_opts.parse, type: fm_opts.type })
-			.use(highlight_blocks, { highlighter: highlight });
+			.use(highlight_blocks, highlight);
 
 		if (smartypants) {
 			toMDAST.use(
@@ -46802,18 +46857,27 @@ ${escape_curlies(escapeHtml_1(code))}
 		smartypants: true,
 		extension: '.svx',
 		layout: false,
-		highlight: code_highlight,
+		highlight: { highlighter: code_highlight },
 	};
+
+	function to_posix(_path) {
+		const isExtendedLengthPath = /^\\\\\?\\/.test(_path);
+		const hasNonAscii = /[^\u0000-\u0080]+/.test(_path); // eslint-disable-line no-control-regex
+
+		if (isExtendedLengthPath || hasNonAscii) {
+			return _path;
+		}
+
+		return _path.replace(/\\/g, '/');
+	}
 
 	function resolve_layout(layout_path) {
 		try {
-			require.resolve(layout_path);
-			return layout_path;
+			return to_posix(require.resolve(layout_path));
 		} catch (e) {
 			try {
 				const _path = join(process.cwd(), layout_path);
-				require.resolve(_path);
-				return _path;
+				return to_posix(require.resolve(_path));
 			} catch (e) {
 				throw new Error(
 					`The layout path you provided couldn't be found at either ${layout_path} or ${join(
@@ -46825,12 +46889,14 @@ layout_path
 		}
 	}
 
+	// handle custom components
+
 	function process_layouts(layouts) {
 		const _layouts = layouts;
 
 		for (const key in _layouts) {
 			const layout = fs.readFileSync(_layouts[key].path, { encoding: 'utf8' });
-			const ast = parse$9(layout);
+			const ast = compiler_1(layout);
 
 			if (ast.module) {
 				const component_export = ast.module.content.body.find(
@@ -46872,7 +46938,7 @@ layout_path
 		smartypants = true,
 		extension = '.svx',
 		layout = false,
-		highlight = code_highlight,
+		highlight = { highlighter: code_highlight },
 		frontmatter,
 	} = defaults$3) => {
 		let _layout = layout ? {} : layout;
@@ -46883,6 +46949,9 @@ layout_path
 			for (const name in layout) {
 				_layout[name] = { path: resolve_layout(layout[name]) };
 			}
+		}
+		if (highlight && highlight.highlighter === undefined) {
+			highlight.highlighter = code_highlight;
 		}
 
 		_layout = process_layouts(_layout);

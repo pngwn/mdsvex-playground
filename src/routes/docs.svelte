@@ -368,6 +368,11 @@
       /* display: block;÷ */
     }
 
+    .container {
+      display: block;
+      overflow: hidden;
+    }
+
     article > :global(*) {
       margin-left: 30px !important;
       margin-right: 30px !important;
@@ -377,6 +382,10 @@
       margin-left: 0 !important;
       margin-right: 0 !important;
       border-radius: 0 !important;
+    }
+
+    article > :global(.language-sig) {
+      width: calc(100% - 6rem);
     }
 
     article :global(pre) {
