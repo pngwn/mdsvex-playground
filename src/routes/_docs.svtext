@@ -275,28 +275,18 @@ Remark plugins work on the Markdown AST (MDAST) produced by remark, reype plugin
 highlight: (code: string, lang: string) => string;
 ```
 
-Without any configuration, mdsvex will automatically highlight the syntax of over 100 languages using PrismJS[prism], you simply need to add the language name to the fenced code block. Languages are loaded on-demand and cached for later use, this feature does not unnecessarily load all languages for highlighting purposes.
+Without any configuration, mdsvex will automatically highlight the syntax of over 100 languages using [PrismJS][prism], you simply need to add the language name to the fenced code block. Languages are loaded on-demand and cached for later use, this feature does not unnecessarily load all languages for highlighting purposes.
 
-````md
-```js
-function my_function(string)
-	return string.toUpperCase();
-```
-````
-
-Will produce:
-
-```js
-function my_function(string) {
-	return string.toUpperCase();
-}
-```
 
 If you wish to handle syntax-highlighting yourself, you can provide a custom highlight function via the `highlight` option. This options take a function as an argument. The function will recieve two parameters, the `code` to be highlighted and the `lang` defined in the fenced code-block, both are strings. You can use this information to highlight as you wish. The function should return a string of highlighted code.
 
 You can disable syntax highlighting by passing a function that does nothing:
 
-
+```js
+function highlight(code, lang) {
+	return `<pre><code>${code}</code></pre>`;
+}
+```
 
 ### `frontmatter`
 
@@ -475,22 +465,22 @@ Would normally compile to:
 </ul>
 ```
 
-Custom compments allow you to replace these element with components. You can define components by exporting an object named `component` from the `context="module"` script of your Layout file:
+Custom compments allow you to replace these element with components. You can define components by exporting named exports from the `context="module"` script of your Layout file:
 
 ```svelte
 <script context="module">
-  import { H1, P, LI } from './components.js';
-  export const components = { h1: H1, p: P, li: LI };
+  import { h1, p li } from './components.js';
+  export { h1, p, li };
 </script>
 ```
 
-the `components` object must be an object of key-value pairs, the key must be the actual element you want to replace (`p`, `blockquote`, etc.), the value must be the component you wish to replace them with.
+The named exports must be named after the actual element you want to replace (`p`, `blockquote`, etc.), the value must be the component you wish to replace them with. This makes certain named exports 'proected' API, make sure you don't use html names as export names for other values. Named exports whose names does not correpsond to an HTML element will be ignored, so feel free to continue using them for other puposes as well. As these are named exports it is possible for the bundler to treeshake unused custom components, even if they are exported.
 
 The above custom components would generate:
 
 ```svelte
 <script>
-  import { components as Components } from './Layout.svelte';
+  import * as Components from './Layout.svelte';
 </script>
 
 <Components.h1>Title</Components.h1>
@@ -502,7 +492,7 @@ The above custom components would generate:
 </ul>
 ```
 
-Notice that the `UL` is left intact: elements are replaced _after_ the markdown is parsed to HTML. This allows greater flexibility, for example, when using custom components to customise lists, tables or other markdown that compiles to a combination of different HTML elements.
+Notice that the `ul` is left intact: elements are replaced _after_ the markdown is parsed to HTML. This allows greater flexibility, for example, when using custom components to customise lists, tables or other markdown that compiles to a combination of different HTML elements.
 
 ## Frontmatter
 
