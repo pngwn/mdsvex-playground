@@ -183,6 +183,7 @@
 
   .inited {
     opacity: 1;
+    height: 100%;
   }
 
   .greyed-out {
@@ -198,7 +199,7 @@
 </style>
 
 <div class="iframe-container">
-  <div>
+  <div style="height: 100%">
     <iframe
       title="Result"
       class:inited
