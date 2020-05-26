@@ -474,7 +474,7 @@ Custom components allow you to replace these elements with components. You can d
 </script>
 ```
 
-The named exports must be named after the actual element you want to replace (`p`, `blockquote`, etc.), the value must be the component you wish to replace them with. This makes certain named exports 'proected' API, make sure you don't use html names as export names for other values. Named exports whose names does not correpsond to an HTML element will be ignored, so feel free to continue using them for other puposes as well. As these are named exports it is possible for the bundler to treeshake unused custom components, even if they are exported.
+The named exports must be named after the actual element you want to replace (`p`, `blockquote`, etc.), the value must be the component you wish to replace them with. This makes certain named exports 'protected' API, make sure you don't use html names as export names for other values. Named exports whose names does not correspond to an HTML element will be ignored, so feel free to continue using them for other purposes as well. As these are named exports it is possible for the bundler to treeshake unused custom components, even if they are exported.
 
 The above custom components would generate:
 
